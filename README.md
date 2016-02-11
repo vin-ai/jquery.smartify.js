@@ -5,3 +5,19 @@ jQuery Lazifier turns all element to load images, content in on demand while pag
 It's an alternate of [jQuery Lazyload](https://github.com/tuupola/jquery_lazyload), but with more elements coverage and advanced. This doesn't only work for &lt;img&gt;, have capabality to lazify every thing!
 
 Plugin is inspired by [jQuery Lazyload](https://github.com/tuupola/jquery_lazyload) created by [Mika Tuupola](https://github.com/tuupola).
+
+### Example:
+
+```javascript
+$(".lazify").lazify({
+    threshold: 200,
+    appear: function ($element, settings) {
+        console.log('Appear Called:');
+        console.log($element);
+    },
+    load: function ($element, settings) {
+        console.log('Load Called:');
+        console.log($element);
+    }
+});
+```
