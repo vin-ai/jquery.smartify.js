@@ -1,14 +1,14 @@
 /**
- * Copyright 2016, G4ce Technologies Pvt. Ltd.
+ * Copyright 2016, VINAY KUMAR SHARMA Pvt. Ltd.
  * Licensed under the MIT license.
- * http://g4ce.in/jquery-plugins/license/
+ * http://www.vinay-sharma.com/jquery-plugins/license/
  *
  * @author Vinay Kumar Sharma
  * @desc A small plugin that checks whether elements are within
  *       the user visible viewport of a web browser, and applies
  *       the defined action.
  *       only accounts for vertical position, not horizontal.
- * @version 1.0-alpha
+ * @version 1.0.0-alpha
  */
 ;
 (function ($, window, document, undefined) {
