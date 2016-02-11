@@ -17,6 +17,17 @@
     var container_width = 0,
         container_height = 0;
 
+    var device_pixel_ration = window.devicePixelRatio || 1;
+    var multiple_for_dpr = null;
+    if (device_pixel_ration > 1) {
+        // `ng-src` for normal
+        // Retina support
+        // ng-src-dpr-1_5x
+        // ng-src-dpr-2x
+        // ng-src-dpr-3x
+        multiple_for_dpr = "ng-src-dpr-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1_5x"));
+    }
+
     var log = console && console.log ? function (d) {
         console.log(d);
     } : $.noop;
@@ -85,21 +96,33 @@
             elements = $(temp);
         }
 
+        function toggle_classes($element) {
+            var toggle_class = $element.data('toggle-class');
+            var add_class = $element.data('add-class');
+            var remove_class = $element.data('remove-class');
+
+            if(toggle_class) {
+                $element.toggleClass(toggle_class);
+            }
+            if(remove_class) {
+                $element.toggleClass(remove_class);
+            }
+            if(add_class) {
+                $element.toggleClass(add_class);
+            }
+        }
+
         function load_for_image(element, element_settings, remove_this_element) {
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
             $("<img />").bind("load", function () {
                 $element.hide();
-                if ($element.is("img")) {
-                    $element.attr("src", src_original);
-                } else {
-                    $element.css("background-image", "url('" + src_original + "')");
-                }
+                $element.attr("src", src_original);
                 $element[element_settings.effect](element_settings.effect_speed);
 
                 element.loaded = true;
                 remove_this_element();
-                element_settings.load(self, elements, element_settings, undefined, undefined);
+                element_settings.load(element, elements, element_settings, undefined, undefined);
             }).attr("src", src_original);
         }
 
@@ -111,7 +134,7 @@
                 $element[element_settings.effect](element_settings.effect_speed);
                 element.loaded = true;
                 remove_this_element();
-                element_settings.load(self, elements, element_settings, undefined, undefined);
+                element_settings.load(element, elements, element_settings, undefined, undefined);
             }).attr("src", src_original);
         }
 
@@ -120,20 +143,31 @@
             var url = $element.attr('href');
             var to_do = $element.data('do');
             var $target = $element.data('target');
-            //
-            // Using selector, e.g #target_element
-            $target = $($target);
-            // or has defined to propagate in parent
-            if ($target === 'in-parent') {
+            // If target is not a html tag not CSS selector,
+            // but represents like function, call that function
+            // and find target element
+            if ($target === 'parent()') {
                 $target = $element.parent();
+            } else if($target) {
+                $target = $($target);
             }
 
             if ($target.is('iframe')) {
                 // just call `load_for_iframe` here
                 load_for_iframe(element, element_settings, remove_this_element);
+                $target[element_settings.effect](element_settings.effect_speed);
+                // Call toggle_classes to toggle defined classes on target element
+                toggle_classes($target);
             } else {
-                $.ajax(url, function (responseText) {
+                // More options from data attribute of $element
+                var ajax_options = {
+                    method: "GET",
+                    url: url,
+                    data: {}
+                };
+                $.ajax(ajax_options).done(function (responseText) {
                     responseText = $.parseHTML(responseText);
+                    log(responseText);
                     if (to_do === 'append') {
                         $target.appendChild(responseText);
                     } else {
@@ -141,12 +175,14 @@
                     }
 
                     $target[element_settings.effect](element_settings.effect_speed);
+                    // Call toggle_classes to toggle defined classes on target element
+                    toggle_classes($target);
 
                     element.loaded = true;
                     remove_this_element();
-                    element_settings.load(self, elements, element_settings, responseText, undefined);
+                    element_settings.load(element, elements, element_settings, responseText, undefined);
                 }).fail(function (jqXHR, textStatus) {
-                    element_settings.load(self, elements, element_settings, jqXHR, textStatus);
+                    element_settings.load(element, elements, element_settings, jqXHR, textStatus);
                 });
             }
         }
@@ -177,30 +213,14 @@
             // Types
             var is_a = $self.is('a');
             var is_img = $self.is('img');
-            var if_iframe = $self.is('iframe');
-            //
-            // Class
-            var toggle_class = $element.data('toggle-class');
-            var add_class = $element.data('add-class');
-            var remove_class = $element.data('remove-class');
+            var is_iframe = $self.is('iframe');
 
-            if(toggle_class || add_class || remove_class) {
-                // add to callback event,
-                // So, whenever it will be called
-                //
-                // Here accept all arguments, which ever has maximum
-                // and pass same as well
+            if($self.data('toggle-class') || $self.data('add-class') || $self.data('remove-class')) {
+                // Copy class, just to prevent infinite recursion
+                var prev_on_load = element_settings.load;
                 element_settings.load = function(element, elements, element_settings, jqXHR, textStatus) {
-                    element_settings.load(element, elements, element_settings, jqXHR, textStatus);
-                    if(toggle_class) {
-                        element.toggleClass(toggle_class);
-                    }
-                    if(remove_class) {
-                        element.toggleClass(remove_class);
-                    }
-                    if(add_class) {
-                        element.toggleClass(add_class);
-                    }
+                    prev_on_load(element, elements, element_settings, jqXHR, textStatus);
+                    toggle_classes($self);
                 };
             }
 
@@ -233,19 +253,25 @@
                 // call the callback function with some parameters
                 if (element_settings.appear) {
                     // pass the rest elements, so user can cook something on that
-                    element_settings.appear.call(self, elements, element_settings);
+                    element_settings.appear(self, elements, element_settings);
                 }
 
                 if (is_img) {
                     load_for_image(self, element_settings, remove_loaded_elements);
                 } else if (is_a) {
                     if ($self.data('target')) {
-                        load_for_anchor(self, remove_loaded_elements);
+                        load_for_anchor(self, element_settings, remove_loaded_elements);
                     } else {
                         log('%cAn Anchor Tag must have defined data-target="" property to load response content in!', 'color: #ff9900;');
                     }
                 } else if (is_iframe) {
                     load_for_iframe(self, element_settings, remove_loaded_elements);
+                } else {
+                    element_settings.load(self, elements, element_settings);
+                    // if(ng-src && attr_src === undefined && !(is_a || is_iframe)) {
+                    // load_an_image using DOM
+                    // $element.css("background-image", "url('" + src_original + "')");
+                    // }
                 }
             });
 
