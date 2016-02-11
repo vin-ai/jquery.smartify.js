@@ -1,0 +1,38 @@
+{
+    "name": "jquery-lazifier",
+    "version": "1.0.0-beta",
+    "title": "jQuery Lazifier",
+    "author": {
+        "name": "Vinay Kumar Sharma",
+        "email": "vinaykrsharma@live.in",
+        "url": "http://www.vinay-sharma.com/"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://www.opensource.org/licenses/mit-license.php"
+        }
+    ],
+    "dependencies": {
+    },
+    "description": "jQuery Lazifier turns all element to load images, content in on demand like while page scrolling and element is or becoming visible in device ViewPort.",
+    "keywords": [
+        "lazifier",
+        "lazify",
+        "lazy load",
+        "lazy",
+        "load",
+        "image",
+        "smartweb"
+    ],
+    "homepage": "http://www.vinay-sharma.com/jquery-plugins/lazifier",
+    "bugs": "https://github.com/vinaykrsharma/jQuery-Lazifier/issues",
+    "docs": "http://www.vinay-sharma.com/jquery-plugins/lazifier",
+    "demo": "http://www.vinay-sharma.com/jquery-plugins/demo.html",
+    "files": [
+        "jquery.lazifier.js",
+        "jquery.lazifier.min.js",
+        "jquery.scrollstop.js",
+        "jquery.scrollstop.min.js"
+    ]
+}

@@ -1,0 +1,27 @@
+{
+  "name": "jquery_lazifier",
+  "version": "2.1.4",
+  "homepage": "http://www.vinay-sharma.com/jquery-plugins/lazifier",
+  "authors": [
+    "Vinay Kumar Sharma <vinaykrsharma@live.in>"
+  ],
+  "description": "jQuery plugin to lazily load contents when in or being visible in device Viewport",
+  "main": [
+    "jquery.lazifier.js",
+    "jquery.scrollstop.js"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "**/*.min.js",
+    "**/*.html",
+    "**/*.textile",
+    "Gruntfile.js",
+    "lazifier.jquery.json",
+    "package.json",
+    "node_modules",
+    "bower_components",
+    "test",
+    "img"
+  ]
+}

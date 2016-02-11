@@ -1,0 +1,26 @@
+h1. Lazifier Library for Smart Web
+
+Lazifier loads images, URLs, Ajax Contents, and changed attributes in delays when or being element visible in device View Port.
+
+h2. Getting Started
+
+Lazifier is a jQuery Plugin. So, you will required to include jQuery too. Include them both in end of your HTML code before <strong>&lt;/body&gt;</strong>:
+
+<pre><script src="jquery.js" type="text/javascript"></script>
+<script src="jquery.lazifier.js" type="text/javascript"></script></pre>
+
+All elements to take control by Lazifier required to add a class value `.lazify` and some other attributes:
+
+<strong>For Example</strong>
+
+<pre><img class="lazify" ng-src="img/example.jpg" width="640" height="480"></pre>
+
+then in your code do:
+
+<pre>$(".lazify").lazify();</pre>
+
+This causes all images of class lazy to be lazy loaded.
+
+h3. 1.0.0-beta
+
+* First Beta Release of the Plugin

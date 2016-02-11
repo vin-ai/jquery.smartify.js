@@ -1,0 +1,40 @@
+{
+  "name": "jquery-lazifier",
+  "version": "1.0.0-beta",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:vinaykrsharma/jQuery_Lazifier.git"
+  },
+  "author": "Vinay Kumar Sharma <vinaykrsharma@live.in>",
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.4",
+    "grunt-contrib-uglify": "~0.2.4",
+    "grunt-contrib-jasmine": "~0.5.2",
+    "grunt-contrib-watch": "~0.5.3"
+  },
+  "description": "jQuery plugin to lazily load contents when in or being visible in device Viewport",
+  "bugs": {
+    "url": "https://github.com/vinaykrsharma/jQuery_Lazifier/issues"
+  },
+  "homepage": "http://www.vinay-sharma.com/jquery-plusings/jquery-lazifier",
+  "main": "jquery.lazifier.js",
+  "files": [
+      "jquery.lazifier.js",
+      "jquery.scrollstop.js"
+  ],
+  "keywords": [
+    "jquery-plugin",
+    "lazify",
+    "lazifier",
+    "lazy load",
+    "ecosystem:jquery"
+  ],
+  "license": "MIT"
+}
