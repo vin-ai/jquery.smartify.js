@@ -6,6 +6,12 @@ It's an alternate of [jQuery Lazyload](https://github.com/tuupola/jquery_lazyloa
 
 Plugin is inspired by [jQuery Lazyload](https://github.com/tuupola/jquery_lazyload) created by [Mika Tuupola](https://github.com/tuupola).
 
+### Plans & Features
+
+- [ ] Multiple Elements Support
+- [ ] Retina Support
+- [ ] Element.getBoundingClientRect() support
+
 ### Example:
 
 ```javascript
