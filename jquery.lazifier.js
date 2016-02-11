@@ -37,6 +37,8 @@
             appear: null,
             load: null
         };
+        
+        $.extend(settings, options || {});
 
         /* Cache container as jQuery as object. */
         $container = (settings.container === undefined ||
@@ -159,10 +161,6 @@
                     }
                 });
             }
-        }
-
-        if (options) {
-            $.extend(settings, options);
         }
 
         /* Fire one scroll event per scroll. Not one scroll event per image. */
