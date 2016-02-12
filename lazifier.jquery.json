@@ -31,8 +31,6 @@
     "demo": "http://www.vinay-sharma.com/jquery-plugins/demo.html",
     "files": [
         "jquery.lazifier.js",
-        "jquery.lazifier.min.js",
-        "jquery.scrollstop.js",
-        "jquery.scrollstop.min.js"
+        "jquery.lazifier.min.js"
     ]
 }
