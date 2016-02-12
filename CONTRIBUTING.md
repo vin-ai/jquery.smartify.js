@@ -42,10 +42,11 @@ than yours. It is not a world war. Just follow then original.
 ```javascript
 var snake_case = "something";
 
-function camelCase(options) {
+function not_camel_case(options) {
+    //
 }
 
 if (true !== false) {
-    console.log("here be dragons");
+    console.log("Here be dragons!");
 }
 ```
