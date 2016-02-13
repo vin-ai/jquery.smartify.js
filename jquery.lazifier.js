@@ -101,13 +101,13 @@
             var add_class = $element.data('add-class');
             var remove_class = $element.data('remove-class');
 
-            if(toggle_class) {
+            if (toggle_class) {
                 $element.toggleClass(toggle_class);
             }
-            if(remove_class) {
+            if (remove_class) {
                 $element.toggleClass(remove_class);
             }
-            if(add_class) {
+            if (add_class) {
                 $element.toggleClass(add_class);
             }
         }
@@ -129,13 +129,11 @@
         function load_for_iframe(element, element_settings, remove_this_element) {
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
-            $("<iframe>").bind("load", function () {
-                $element.attr('src', src_original);
-                $element[element_settings.effect](element_settings.effect_speed);
-                element.loaded = true;
-                remove_this_element();
-                element_settings.load(element, elements, element_settings, undefined, undefined);
-            }).attr("src", src_original);
+            $element.attr('src', src_original);
+            $element[element_settings.effect](element_settings.effect_speed);
+            element.loaded = true;
+            remove_this_element();
+            element_settings.load(element, elements, element_settings, undefined, undefined);
         }
 
         function load_for_anchor(element, element_settings, remove_this_element) {
@@ -148,14 +146,15 @@
             // and find target element
             if ($target === 'parent()') {
                 $target = $element.parent();
-            } else if($target) {
+            } else if ($target) {
                 $target = $($target);
             }
 
             if ($target.is('iframe')) {
+                $target.attr(element_settings.src_attr, url);
                 // just call `load_for_iframe` here
-                load_for_iframe(element, element_settings, remove_this_element);
-                $target[element_settings.effect](element_settings.effect_speed);
+                load_for_iframe($target.get(0), element_settings, remove_this_element);
+                // $target[element_settings.effect](element_settings.effect_speed);
                 // Call toggle_classes to toggle defined classes on target element
                 toggle_classes($target);
             } else {
@@ -166,7 +165,6 @@
                     data: {}
                 };
                 $.ajax(ajax_options).done(function (responseText) {
-                    responseText = $.parseHTML(responseText);
                     log(responseText);
                     if (to_do === 'append') {
                         $target.appendChild(responseText);
@@ -208,17 +206,19 @@
             var element_settings = $.extend({}, settings);
             var src = $.trim($self.attr('src')) || false;
             var src_original = $.trim($self.attr(element_settings.src_attr)) || false;
-            var threshold = parseInt($.trim($self.data('threshold')) || 0);
             //
             // Types
             var is_a = $self.is('a');
             var is_img = $self.is('img');
             var is_iframe = $self.is('iframe');
+            //
+            // Threshold update
+            element_settings.threshold = parseInt($.trim($self.data('threshold')) || settings.threshold);
 
-            if($self.data('toggle-class') || $self.data('add-class') || $self.data('remove-class')) {
+            if ($self.data('toggle-class') || $self.data('add-class') || $self.data('remove-class')) {
                 // Copy class, just to prevent infinite recursion
                 var prev_on_load = element_settings.load;
-                element_settings.load = function(element, elements, element_settings, jqXHR, textStatus) {
+                element_settings.load = function (element, elements, element_settings, jqXHR, textStatus) {
                     prev_on_load(element, elements, element_settings, jqXHR, textStatus);
                     toggle_classes($self);
                 };
@@ -236,10 +236,6 @@
                 self.no_src_attr = true;
                 remove_loaded_elements();
                 return
-            }
-
-            if (threshold) {
-                element_settings.threshold = $self.data('threshold');
             }
 
             /* When appear is triggered load original image. */
@@ -262,7 +258,7 @@
                     if ($self.data('target')) {
                         load_for_anchor(self, element_settings, remove_loaded_elements);
                     } else {
-                        log('%cAn Anchor Tag must have defined data-target="" property to load response content in!', 'color: #ff9900;');
+                        log('%cAn Anchor Tag must have defined data-target="" attribute to load response content in!', 'color: #ff9900;');
                     }
                 } else if (is_iframe) {
                     load_for_iframe(self, element_settings, remove_loaded_elements);
