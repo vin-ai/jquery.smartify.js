@@ -8,7 +8,7 @@
  *       the user visible viewport of a web browser, and applies
  *       the defined action.
  *       only accounts for vertical position, not horizontal.
- * @version 1.0.0-alpha
+ * @version 1.0.0-beta
  */
 ;
 (function ($, window, document, undefined) {
@@ -59,8 +59,9 @@
         function update_container() {
             if ($.container_is_window()) {
                 container_height = window.innerHeight ? window.innerHeight : $container.height();
+            } else {
+                container_height = $container.height();
             }
-            container_height = $container.height();
             container_width = $container.width();
         }
 
@@ -89,7 +90,7 @@
         }
 
         function remove_loaded_elements() {
-            /* Remove image from array so it is not looped next time. */
+            /* Remove element from list so it is not looped next time. */
             var temp = $.grep(elements, function (element) {
                 return !(element.loaded || element.no_src_attr);
             });
@@ -345,7 +346,7 @@
         return container_left() >= $(element).offset().left + settings.threshold + $(element).width();
     };
 
-    $.in_view_port = function (element, settings) {
+    $.visible_in_viewport = function (element, settings) {
         return !$.right_of_fold(element, settings) && !$.left_of_begin(element, settings) && !$.below_the_fold(element, settings) && !$.above_the_top(element, settings);
     };
 
@@ -354,7 +355,7 @@
     /* $("img").filter(":visible-in-viewport").something() which is faster */
     $.extend($.expr[":"], {
         "visible-in-viewport": function (a) {
-            return $.in_view_port(a, {threshold: 0});
+            return $.visible_in_viewport(a, {threshold: 0});
         },
         "below-the-fold": function (a) {
             return $.below_the_fold(a, {threshold: 0});
