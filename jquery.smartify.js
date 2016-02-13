@@ -73,10 +73,11 @@
                 if (settings.skip_invisible && !$this.is(":visible")) {
                     return;
                 }
-                if ($.above_the_top(this, settings) ||
-                    $.left_of_begin(this, settings)) {
+                if ($.above_the_top(this, settings.threshold) ||
+                    $.left_of_begin(this, settings.threshold)) {
                     /* Nothing. */
-                } else if (!$.below_the_fold(this, settings) && !$.right_of_fold(this, settings)) {
+                } else if (!$.below_the_fold(this, settings.threshold)
+                    && !$.right_of_fold(this, settings.threshold)) {
                     $this.trigger("appear");
                     /* if we found an image we'll load, reset the counter */
                     counter = 0;
@@ -232,7 +233,8 @@
 
             // If element is in the collection, but don't have value of `src_attr` attribute
             if ((is_img || is_iframe) && !src_original) {
-                log('%cElement has no ' + element_settings.src_attr + ' defined to load', 'color: #ff9900;');
+                log('%cElement has no ' + element_settings.src_attr + ' defined to load',
+                    'color: #ff9900;');
                 // Remove element from array so it is not looped next time.
                 self.no_src_attr = true;
                 remove_loaded_elements();
@@ -259,7 +261,8 @@
                     if ($self.data('target')) {
                         load_for_anchor(self, element_settings, remove_loaded_elements);
                     } else {
-                        log('%cAn Anchor Tag must have defined data-target="" attribute to load response content in!', 'color: #ff9900;');
+                        log('%cAn Anchor Tag must have defined data-target="" attribute ' +
+                            'to load response content in!', 'color: #ff9900;');
                     }
                 } else if (is_iframe) {
                     load_for_iframe(self, element_settings, remove_loaded_elements);
@@ -328,26 +331,27 @@
     }
 
     /* Convenience methods in jQuery namespace.           */
-    /* Use as  $.below_the_fold(element, {threshold : 100, container : window}) */
+    /* Use as  $.below_the_fold(element, 100) */
 
-    $.below_the_fold = function (element, settings) {
-        return container_height + container_top() <= $(element).offset().top - settings.threshold;
+    $.below_the_fold = function (element, threshold) {
+        return container_height + container_top() <= $(element).offset().top - threshold;
     };
 
-    $.right_of_fold = function (element, settings) {
-        return container_width + container_left() <= $(element).offset().left - settings.threshold;
+    $.right_of_fold = function (element, threshold) {
+        return container_width + container_left() <= $(element).offset().left - threshold;
     };
 
-    $.above_the_top = function (element, settings) {
-        return container_top() >= $(element).offset().top + settings.threshold + $(element).height();
+    $.above_the_top = function (element, threshold) {
+        return container_top() >= $(element).offset().top + threshold + $(element).height();
     };
 
-    $.left_of_begin = function (element, settings) {
-        return container_left() >= $(element).offset().left + settings.threshold + $(element).width();
+    $.left_of_begin = function (element, threshold) {
+        return container_left() >= $(element).offset().left + threshold + $(element).width();
     };
 
-    $.visible_in_viewport = function (element, settings) {
-        return !$.right_of_fold(element, settings) && !$.left_of_begin(element, settings) && !$.below_the_fold(element, settings) && !$.above_the_top(element, settings);
+    $.visible_in_viewport = function (element, threshold) {
+        return !$.right_of_fold(element, threshold) && !$.left_of_begin(element, threshold)
+            && !$.below_the_fold(element, threshold) && !$.above_the_top(element, threshold);
     };
 
     /* Custom selectors for your convenience.   */
@@ -355,19 +359,19 @@
     /* $("img").filter(":visible-in-viewport").something() which is faster */
     $.extend($.expr[":"], {
         "visible-in-viewport": function (a) {
-            return $.visible_in_viewport(a, {threshold: 0});
+            return $.visible_in_viewport(a, 0);
         },
         "below-the-fold": function (a) {
-            return $.below_the_fold(a, {threshold: 0});
+            return $.below_the_fold(a, 0);
         },
         "above-the-top": function (a) {
-            return !$.below_the_fold(a, {threshold: 0});
+            return !$.below_the_fold(a, 0);
         },
         "right-of-screen": function (a) {
-            return $.right_of_fold(a, {threshold: 0});
+            return $.right_of_fold(a, 0);
         },
         "left-of-screen": function (a) {
-            return !$.right_of_fold(a, {threshold: 0});
+            return !$.right_of_fold(a, 0);
         }
     });
 
