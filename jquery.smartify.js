@@ -32,7 +32,7 @@
         console.log(d);
     } : $.noop;
 
-    $.fn.lazify = function (options) {
+    $.fn.smartify = function (options) {
         var elements = this;
         var settings = {
             threshold: 0,
