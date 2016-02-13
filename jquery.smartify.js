@@ -1,9 +1,9 @@
 /**
- * Copyright 2016, VINAY KUMAR SHARMA Pvt. Ltd.
+ * Copyright 2016, VINAY KUMAR SHARMA
  * Licensed under the MIT license.
  * http://www.vinay-sharma.com/jquery-plugins/license/
  *
- * @author Vinay Kumar Sharma
+ * @author Vinay Kumar Sharma <vinaykrsharma@live.in>
  * @desc A small plugin that checks whether elements are within
  *       the user visible viewport of a web browser, and applies
  *       the defined action.
@@ -14,8 +14,6 @@
 (function ($, window, document, undefined) {
     var $window = $(window);
     var $container = $window;
-    var container_width = 0,
-        container_height = 0;
 
     var device_pixel_ration = window.devicePixelRatio || 1;
     var multiple_for_dpr = null;
@@ -53,17 +51,6 @@
         /* Cache container as jQuery as object. */
         $container = (settings.container === undefined || settings.container === window) ?
             $window : $(settings.container);
-
-        // call this function on window.resize() and on window.load()
-        // do not required to call every time
-        function update_container() {
-            if ($.container_is_window()) {
-                container_height = window.innerHeight ? window.innerHeight : $container.height();
-            } else {
-                container_height = $container.height();
-            }
-            container_width = $container.width();
-        }
 
         function update() {
             var counter = 0;
@@ -298,33 +285,52 @@
             });
         }
 
-        var init = function () {
-            update_container();
-            update();
-        };
-
         /* Check if something appears when window is resized. */
-        $window.bind("resize", init);
+        $window.bind("resize", update);
         /* Force initial check if images should appear. */
-        $(document).ready(init);
+        $(document).ready(update);
 
         return this;
     };
 
 
-    $.container_is_window = function () {
-        return $container === $window;
-    };
+    function getBoundingClientRect(element) {
+        if (element === window) {
+            element = window.document;
+        }
+        if (typeof element.getBoundingClientRect === 'function') {
+            return element.getBoundingClientRect();
+        }
+        var $element = $(element);
+        var rect = {
+            width: $element.width(),
+            height: $element.height()
+        };
+        // Check if window
+        if (typeof $element.scrollTop === 'function') {
+            rect.x = $element.scrollLeft();
+            rect.y = $element.scrollTop();
+        } else {
+            rect.x = $element.offset().left;
+            rect.y = $element.offset().top;
+        }
+        rect.left = rect.x;
+        rect.top = rect.y;
+        rect.right = rect.left + rect.width;
+        rect.bottom = rect.top + rect.height;
+        //
+        return rect;
+    }
 
     function container_top() {
-        if ($.container_is_window()) {
+        if (typeof $container.scrollTop === 'function') {
             return $container.scrollTop();
         }
         return $container.offset().top;
     }
 
     function container_left() {
-        if ($.container_is_window()) {
+        if (typeof $container.scrollLeft === 'function') {
             return $container.scrollLeft();
         }
         return $container.offset().left;
@@ -334,11 +340,11 @@
     /* Use as  $.below_the_fold(element, 100) */
 
     $.below_the_fold = function (element, threshold) {
-        return container_height + container_top() <= $(element).offset().top - threshold;
+        return $container.height() + container_top() <= $(element).offset().top - threshold;
     };
 
     $.right_of_fold = function (element, threshold) {
-        return container_width + container_left() <= $(element).offset().left - threshold;
+        return $container.width() + container_left() <= $(element).offset().left - threshold;
     };
 
     $.above_the_top = function (element, threshold) {
