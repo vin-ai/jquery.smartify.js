@@ -11,7 +11,7 @@ code changes. Commit messages should be descriptive and full
 sentences.
 
 Do not commit minified versions. Do not touch the version number. 
-Make the pull requests against [1.0.x branch](https://github.com/vinaykrsharma/jQuery-Lazifier/commits/1.0.x).
+Make the pull requests against [WIP branch](https://github.com/vinaykrsharma/jQuery-Lazifier/commits/WIP).
 
 ## Write meaningful commit messages
 
