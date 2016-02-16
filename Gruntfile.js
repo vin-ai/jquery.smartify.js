@@ -5,12 +5,11 @@ module.exports = function(grunt) {
         pkg: grunt.file.readJSON("package.json"),
         uglify : {
             options: {
-                banner: "/*! Lazifier <%= pkg.version %> - MIT license - Copyright 2016 VINAY KUMAR SHARMA */\n"
+                banner: "/*! Smartify <%= pkg.version %> - MIT license - Copyright 2016 VINAY KUMAR SHARMA */\n"
             },
             target: {
                 files: {
-                    "jquery.lazifier.min.js" : "jquery.lazifier.js",
-                    "jquery.scrollstop.min.js" : "jquery.scrollstop.js"
+                    "jquery.smartify.min.js" : "jquery.smartify.js"
                 }
             }
         },
@@ -25,7 +24,7 @@ module.exports = function(grunt) {
             }
         },
         jasmine: {
-            src: ["jquery.lazifier.js"],
+            src: ["jquery.smartify.js"],
             options: {
                 helpers: "test/spec/*Helper.js",
                 specs: "test/spec/*Spec.js",
@@ -42,5 +41,5 @@ module.exports = function(grunt) {
     //grunt.registerTask("test", ["jshint", "jasmine"]);
     grunt.registerTask("test", ["jshint"]);
     grunt.registerTask("default", ["test", "uglify"]);
-
 };
+
