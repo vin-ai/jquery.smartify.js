@@ -1,21 +1,19 @@
 /**
- * Copyright 2016, VINAY KUMAR SHARMA Pvt. Ltd.
+ * Copyright 2016, VINAY KUMAR SHARMA
  * Licensed under the MIT license.
  * http://www.vinay-sharma.com/jquery-plugins/license/
  *
- * @author Vinay Kumar Sharma
+ * @author Vinay Kumar Sharma <vinaykrsharma@live.in>
  * @desc A small plugin that checks whether elements are within
  *       the user visible viewport of a web browser, and applies
  *       the defined action.
  *       only accounts for vertical position, not horizontal.
- * @version 1.0.0-alpha
+ * @version 1.0.0-beta
  */
 ;
 (function ($, window, document, undefined) {
     var $window = $(window);
     var $container = $window;
-    var container_width = 0,
-        container_height = 0;
 
     var device_pixel_ration = window.devicePixelRatio || 1;
     var multiple_for_dpr = null;
@@ -54,16 +52,6 @@
         $container = (settings.container === undefined || settings.container === window) ?
             $window : $(settings.container);
 
-        // call this function on window.resize() and on window.load()
-        // do not required to call every time
-        function update_container() {
-            if ($.container_is_window()) {
-                container_height = window.innerHeight ? window.innerHeight : $container.height();
-            }
-            container_height = $container.height();
-            container_width = $container.width();
-        }
-
         function update() {
             var counter = 0;
 
@@ -72,10 +60,11 @@
                 if (settings.skip_invisible && !$this.is(":visible")) {
                     return;
                 }
-                if ($.above_the_top(this, settings) ||
-                    $.left_of_begin(this, settings)) {
+                if ($.above_the_top(this, settings.threshold) ||
+                    $.left_of_begin(this, settings.threshold)) {
                     /* Nothing. */
-                } else if (!$.below_the_fold(this, settings) && !$.right_of_fold(this, settings)) {
+                } else if (!$.below_the_fold(this, settings.threshold)
+                    && !$.right_of_fold(this, settings.threshold)) {
                     $this.trigger("appear");
                     /* if we found an image we'll load, reset the counter */
                     counter = 0;
@@ -89,7 +78,7 @@
         }
 
         function remove_loaded_elements() {
-            /* Remove image from array so it is not looped next time. */
+            /* Remove element from list so it is not looped next time. */
             var temp = $.grep(elements, function (element) {
                 return !(element.loaded || element.no_src_attr);
             });
@@ -231,7 +220,8 @@
 
             // If element is in the collection, but don't have value of `src_attr` attribute
             if ((is_img || is_iframe) && !src_original) {
-                log('%cElement has no ' + element_settings.src_attr + ' defined to load', 'color: #ff9900;');
+                log('%cElement has no ' + element_settings.src_attr + ' defined to load',
+                    'color: #ff9900;');
                 // Remove element from array so it is not looped next time.
                 self.no_src_attr = true;
                 remove_loaded_elements();
@@ -258,7 +248,8 @@
                     if ($self.data('target')) {
                         load_for_anchor(self, element_settings, remove_loaded_elements);
                     } else {
-                        log('%cAn Anchor Tag must have defined data-target="" attribute to load response content in!', 'color: #ff9900;');
+                        log('%cAn Anchor Tag must have defined data-target="" attribute ' +
+                            'to load response content in!', 'color: #ff9900;');
                     }
                 } else if (is_iframe) {
                     load_for_iframe(self, element_settings, remove_loaded_elements);
@@ -294,59 +285,50 @@
             });
         }
 
-        var init = function () {
-            update_container();
-            update();
-        };
-
         /* Check if something appears when window is resized. */
-        $window.bind("resize", init);
+        $window.bind("resize", update);
         /* Force initial check if images should appear. */
-        $(document).ready(init);
+        $(document).ready(update);
 
         return this;
     };
 
-
-    $.container_is_window = function () {
-        return $container === $window;
-    };
-
     function container_top() {
-        if ($.container_is_window()) {
+        if (typeof $container.scrollTop === 'function') {
             return $container.scrollTop();
         }
         return $container.offset().top;
     }
 
     function container_left() {
-        if ($.container_is_window()) {
+        if (typeof $container.scrollLeft === 'function') {
             return $container.scrollLeft();
         }
         return $container.offset().left;
     }
 
     /* Convenience methods in jQuery namespace.           */
-    /* Use as  $.below_the_fold(element, {threshold : 100, container : window}) */
+    /* Use as  $.below_the_fold(element, 100) */
 
-    $.below_the_fold = function (element, settings) {
-        return container_height + container_top() <= $(element).offset().top - settings.threshold;
+    $.below_the_fold = function (element, threshold) {
+        return $container.height() + container_top() <= $(element).offset().top - threshold;
     };
 
-    $.right_of_fold = function (element, settings) {
-        return container_width + container_left() <= $(element).offset().left - settings.threshold;
+    $.right_of_fold = function (element, threshold) {
+        return $container.width() + container_left() <= $(element).offset().left - threshold;
     };
 
-    $.above_the_top = function (element, settings) {
-        return container_top() >= $(element).offset().top + settings.threshold + $(element).height();
+    $.above_the_top = function (element, threshold) {
+        return container_top() >= $(element).offset().top + threshold + $(element).height();
     };
 
-    $.left_of_begin = function (element, settings) {
-        return container_left() >= $(element).offset().left + settings.threshold + $(element).width();
+    $.left_of_begin = function (element, threshold) {
+        return container_left() >= $(element).offset().left + threshold + $(element).width();
     };
 
-    $.in_view_port = function (element, settings) {
-        return !$.right_of_fold(element, settings) && !$.left_of_begin(element, settings) && !$.below_the_fold(element, settings) && !$.above_the_top(element, settings);
+    $.visible_in_viewport = function (element, threshold) {
+        return !$.right_of_fold(element, threshold) && !$.left_of_begin(element, threshold)
+            && !$.below_the_fold(element, threshold) && !$.above_the_top(element, threshold);
     };
 
     /* Custom selectors for your convenience.   */
@@ -354,19 +336,19 @@
     /* $("img").filter(":visible-in-viewport").something() which is faster */
     $.extend($.expr[":"], {
         "visible-in-viewport": function (a) {
-            return $.in_view_port(a, {threshold: 0});
+            return $.visible_in_viewport(a, 0);
         },
         "below-the-fold": function (a) {
-            return $.below_the_fold(a, {threshold: 0});
+            return $.below_the_fold(a, 0);
         },
         "above-the-top": function (a) {
-            return !$.below_the_fold(a, {threshold: 0});
+            return !$.below_the_fold(a, 0);
         },
         "right-of-screen": function (a) {
-            return $.right_of_fold(a, {threshold: 0});
+            return $.right_of_fold(a, 0);
         },
         "left-of-screen": function (a) {
-            return !$.right_of_fold(a, {threshold: 0});
+            return !$.right_of_fold(a, 0);
         }
     });
 
