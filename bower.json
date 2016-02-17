@@ -1,14 +1,13 @@
 {
-  "name": "jquery_lazifier",
-  "version": "2.1.4",
-  "homepage": "http://www.vinay-sharma.com/jquery-plugins/lazifier",
+  "name": "jquery.smartify",
+  "version": "1.0.0-beta",
+  "homepage": "http://www.vinay-sharma.com/jquery-plugins/smartify",
   "authors": [
     "Vinay Kumar Sharma <vinaykrsharma@live.in>"
   ],
-  "description": "jQuery plugin to lazily load contents when in or being visible in device Viewport",
+  "description": "jQuery Smartify loads images, calls Ajax, plays with css classes in on demand, while element is/or becoming visible in device Viewport.",
   "main": [
-    "jquery.lazifier.js",
-    "jquery.scrollstop.js"
+    "jquery.smartify.js"
   ],
   "license": "MIT",
   "ignore": [
@@ -17,7 +16,7 @@
     "**/*.html",
     "**/*.textile",
     "Gruntfile.js",
-    "lazifier.jquery.json",
+    "smartify.jquery.json",
     "package.json",
     "node_modules",
     "bower_components",
