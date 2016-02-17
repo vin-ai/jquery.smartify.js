@@ -19,6 +19,12 @@ module.exports = function(grunt) {
                 " * Licensed under the <%= pkg.licence %>\n" +
                 " * Copyright <%= grunt.template.today(\"yyyy\") %> <%= pkg.author %>" +
                 " */\n",
+        jshint: {
+            files: ["*.js", "!*.min.js" ,"test/spec/*Spec.js"],
+            options: {
+                jshintrc: ".jshintrc"
+            }
+        },
         connect: {
             server: {
                 options: {
@@ -49,18 +55,14 @@ module.exports = function(grunt) {
             files: ["*.js", "!*.min.js" ,"test/spec/*Spec.js"],
             tasks: ["test"],
         },
-        jshint: {
-            files: ["*.js", "!*.min.js" ,"test/spec/*Spec.js"],
-            options: {
-                jshintrc: ".jshintrc"
-            }
-        },
         jasmine: {
-            src: ["test/specs/jasmine.js"],
-            options: {
-                helpers: "test/specs/helpers/*Helper.js",
-                specs: "test/specs/*Spec.js",
-                vendor: ["test/vendor/jquery-2.1.4.js", "test/vendor/jasmine-jquery.js"]
+            test: {
+                src: "test/specs/jasmine.js",
+                options: {
+                    helpers: "test/specs/helpers/*helper.js",
+                    specs: "test/specs/*spec.js",
+                    vendor: ["test/vendor/jquery-2.1.4.js", "test/vendor/jasmine-jquery.js"]
+                }
             }
         }
     });
@@ -72,8 +74,18 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-jasmine-runner");
     grunt.loadNpmTasks("grunt-contrib-connect");
 
-    grunt.registerTask("test", ["jshint", "jasmine"]);
-    grunt.registerTask("test", ["jshint"]);
-    grunt.registerTask("default", ["test", "uglify", "jasmine"]);
+    grunt.registerTask("build", ["jshint", "uglify", "connect", "watch", "jasmine"]);
+    grunt.registerTask('default', 'start web server for jasmine tests in browser', function() {
+        grunt.task.run('jshint');
+        grunt.task.run('jasmine:modules');
+ 
+        grunt.event.once('connect.test.listening', function( host, port ) {
+           var specRunnerUrl = 'http://' + host + ':' + port + '/_demo.html';
+           grunt.log.writeln('Jasmine specs available at: ' + specRunnerUrl);
+           require('open')(specRunnerUrl);
+        });
+ 
+        grunt.task.run('connect:test:keepalive');
+    });
 };
 
