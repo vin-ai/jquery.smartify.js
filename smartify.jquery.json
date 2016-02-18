@@ -1,6 +1,6 @@
 {
     "name": "jquery.smartify",
-    "version": "1.0.0-beta",
+    "version": "1.0.0-rc",
     "title": "jQuery Smartify",
     "author": {
         "name": "Vinay Kumar Sharma",
@@ -24,10 +24,10 @@
         "lazy load",
         "smartweb"
     ],
-    "homepage": "http://www.vinay-sharma.com/jquery-plugins/smartify",
+    "homepage": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify",
     "bugs": "https://github.com/vinaykrsharma/jquery.smartify/issues",
-    "docs": "http://www.vinay-sharma.com/jquery-plugins/smartify",
-    "demo": "http://www.vinay-sharma.com/jquery-plugins/demo.html",
+    "docs": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify",
+    "demo": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify/demo.html",
     "files": [
         "jquery.smartify.js",
         "jquery.smartify.min.js"

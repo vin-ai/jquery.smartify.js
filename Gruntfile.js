@@ -1,6 +1,6 @@
 /*!
  * Smartify's Gruntfile
- * http://www.vinay-sharma.com/jquery-plugins/smartify
+ * http://www.vinay-sharma.com/jquery-plugins/jquery.smartify
  * Copyright 2016 VINAY KUMAR SHARMA <vinaykrsharma@live.in>
  * Licensed under MIT (https://github.com/vinaykrsharma/jquery.smartify/blob/master/LICENSE)
  */
@@ -9,7 +9,7 @@ module.exports = function(grunt) {
     "use strict";
 
     // Use Unix newlines
-    grunt.util.linefeed = '\n';
+    grunt.util.linefeed = "\n";
 
     grunt.initConfig({
         pkg: grunt.file.readJSON("package.json"),
@@ -54,7 +54,7 @@ module.exports = function(grunt) {
         watch: {
             files: ["*.js", "!*.min.js" ,"test/spec/*Spec.js"],
             tasks: ["test"],
-        },
+        }/*,
         jasmine: {
             test: {
                 src: "test/specs/jasmine.js",
@@ -64,28 +64,28 @@ module.exports = function(grunt) {
                     vendor: ["test/vendor/jquery-2.1.4.js", "test/vendor/jasmine-jquery.js"]
                 }
             }
-        }
+        }*/
     });
 
     grunt.loadNpmTasks("grunt-contrib-uglify");
     grunt.loadNpmTasks("grunt-contrib-jshint");
     grunt.loadNpmTasks("grunt-contrib-watch");
-    grunt.loadNpmTasks("grunt-contrib-jasmine");
-    grunt.loadNpmTasks("grunt-jasmine-runner");
+    // grunt.loadNpmTasks("grunt-contrib-jasmine");
+    // grunt.loadNpmTasks("grunt-jasmine-runner");
     grunt.loadNpmTasks("grunt-contrib-connect");
 
     grunt.registerTask("build", ["jshint", "uglify", "connect", "watch", "jasmine"]);
-    grunt.registerTask('default', 'start web server for jasmine tests in browser', function() {
-        grunt.task.run('jshint');
-        grunt.task.run('jasmine:modules');
+    grunt.registerTask("default", "start web server for jasmine tests in browser", function() {
+        grunt.task.run("jshint");
+        // grunt.task.run('jasmine:modules');
  
-        grunt.event.once('connect.test.listening', function( host, port ) {
-           var specRunnerUrl = 'http://' + host + ':' + port + '/_demo.html';
-           grunt.log.writeln('Jasmine specs available at: ' + specRunnerUrl);
-           require('open')(specRunnerUrl);
+        grunt.event.once("connect.test.listening", function( host, port ) {
+           var specRunnerUrl = "http://" + host + ":" + port + "/demo.html";
+           grunt.log.writeln("Jasmine specs available at: " + specRunnerUrl);
+           require("open")(specRunnerUrl);
         });
  
-        grunt.task.run('connect:test:keepalive');
+        grunt.task.run("connect:test:keepalive");
     });
 };
 
