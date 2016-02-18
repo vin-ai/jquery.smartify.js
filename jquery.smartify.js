@@ -19,10 +19,10 @@
     if (device_pixel_ration > 1) {
         // `ng-src` for normal
         // Retina support
-        // ng-src-dpr-1_5x
-        // ng-src-dpr-2x
-        // ng-src-dpr-3x
-        multiple_for_dpr = "ng-src-dpr-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1_5x"));
+        // ng-src-1_5x
+        // ng-src-2x
+        // ng-src-3x
+        multiple_for_dpr = "ng-src-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1-5x"));
     }
 
     var log = console && console.log ? function (d) {
@@ -51,7 +51,7 @@
         $container = (settings.container === undefined || settings.container === window) ?
             $window : $(settings.container);
 
-        function update() {
+        var refresh = function () {
             var counter = 0;
 
             elements.each(function () {
@@ -62,7 +62,8 @@
                 if ($.above_the_top(this, settings.threshold) ||
                     $.left_of_begin(this, settings.threshold)) {
                     /* Nothing. */
-                } else if (!$.below_the_fold(this, settings.threshold) && !$.right_of_fold(this, settings.threshold)) {
+                } else if (!$.below_the_fold(this, settings.threshold) &&
+                    !$.right_of_fold(this, settings.threshold)) {
                     $this.trigger("appear");
                     /* if we found an image we'll load, reset the counter */
                     counter = 0;
@@ -73,17 +74,17 @@
                 }
             });
 
-        }
+        };
 
-        function remove_loaded_elements() {
-            /* Remove element from list so it is not looped next time. */
+        var remove_loaded_elements = function () {
+            /* Remove current element from list so it can not be looped again. */
             var temp = $.grep(elements, function (element) {
                 return !(element.loaded || element.no_src_attr);
             });
             elements = $(temp);
-        }
+        };
 
-        function toggle_classes($element) {
+        var toggle_classes = function ($element) {
             var toggle_class = $element.data("toggle-class");
             var add_class = $element.data("add-class");
             var remove_class = $element.data("remove-class");
@@ -97,33 +98,44 @@
             if (add_class) {
                 $element.toggleClass(add_class);
             }
-        }
+        };
 
-        function load_for_image(element, element_settings, remove_this_element) {
+        var load_for_image = function (element, element_settings, remove_this_element) {
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
+
+            if($element.hasAttr(multiple_for_dpr)) {
+                src_original = $.trim($element.attr(multiple_for_dpr));
+            }
+
             $("<img />").bind("load", function () {
                 $element.hide();
                 $element.attr("src", src_original);
                 $element[element_settings.effect](element_settings.effect_speed);
-
                 element.loaded = true;
                 remove_this_element();
                 element_settings.load(element, elements, element_settings);
             }).attr("src", src_original);
-        }
+        };
 
-        function load_for_iframe(element, element_settings, remove_this_element) {
+        var load_for_iframe = function (element, element_settings, remove_this_element) {
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
-            $element.attr("src", src_original);
-            $element[element_settings.effect](element_settings.effect_speed);
-            element.loaded = true;
-            remove_this_element();
-            element_settings.load(element, elements, element_settings);
-        }
 
-        function load_for_anchor(element, element_settings, remove_this_element) {
+            if($element.hasAttr(multiple_for_dpr)) {
+                src_original = $.trim($element.attr(multiple_for_dpr));
+            }
+            // bind onload event to iframe
+            // to 
+            $element.on("load", function() {
+                $element[element_settings.effect](element_settings.effect_speed);
+                element.loaded = true;
+                remove_this_element();
+                element_settings.load(element, elements, element_settings);
+            }).attr("src", src_original);
+        };
+
+        var load_for_anchor = function (element, element_settings, remove_this_element) {
             var $element = $(element);
             var url = $element.attr("href");
             var to_do = $element.data("do");
@@ -131,7 +143,20 @@
             // If target is not a html tag not CSS selector,
             // but represents like function, call that function
             // and find target element
-            if ($target === "parent()") {
+            if ($target === "callback()") {
+               $target[element_settings.effect](element_settings.effect_speed);
+               // Call toggle_classes to toggle defined classes on target element
+               toggle_classes($target);
+
+               element.loaded = true;
+               remove_this_element();
+               // Do not call load callback here, just need to call
+               // `appear` callback, which already has been called
+               // element_settings.load(element, elements, element_settings);
+               //
+               // and return
+               return;
+           } else if ($target === "parent()") {
                 $target = $element.parent();
             } else if ($target) {
                 $target = $($target);
@@ -177,12 +202,12 @@
                     element_settings.load(element, elements, element_settings, jqXHR, textStatus);
                 });
             }
-        }
+        };
 
         /* Fire one scroll event per scroll. Not one scroll event per element. */
         if (settings.event.indexOf("scroll") === 0) {
             $container.bind(settings.event, function () {
-                return update();
+                return refresh();
             });
         }
 
@@ -291,30 +316,29 @@
         }
 
         /* Check if something appears when window is resized. */
-        $window.bind("resize", update);
+        $window.bind("resize", refresh);
         /* Force initial check if images should appear. */
-        $(document).ready(update);
+        $(document).ready(refresh);
 
         return this;
     };
 
-    function container_top() {
+    var container_top = function () {
         if (typeof $container.scrollTop === "function") {
             return $container.scrollTop();
         }
         return $container.offset().top;
-    }
+    };
 
-    function container_left() {
+    var container_left = function () {
         if (typeof $container.scrollLeft === "function") {
             return $container.scrollLeft();
         }
         return $container.offset().left;
-    }
+    };
 
     /* Convenience methods in jQuery namespace.           */
     /* Use as  $.below_the_fold(element, 100) */
-
     $.below_the_fold = function (element, threshold) {
         return $container.height() + container_top() <= $(element).offset().top - threshold;
     };
@@ -332,7 +356,10 @@
     };
 
     $.visible_in_viewport = function (element, threshold) {
-        return !$.right_of_fold(element, threshold) && !$.left_of_begin(element, threshold) && !$.below_the_fold(element, threshold) && !$.above_the_top(element, threshold);
+        return !($.right_of_fold(element, threshold) &&
+                $.left_of_begin(element, threshold) &&
+                $.below_the_fold(element, threshold) &&
+                $.above_the_top(element, threshold));
     };
 
     /* Custom selectors for your convenience.   */
