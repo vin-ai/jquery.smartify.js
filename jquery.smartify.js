@@ -104,7 +104,7 @@
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
 
-            if($element.hasAttr(multiple_for_dpr)) {
+            if($element.attr(multiple_for_dpr)) {
                 src_original = $.trim($element.attr(multiple_for_dpr));
             }
 
@@ -122,7 +122,7 @@
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
 
-            if($element.hasAttr(multiple_for_dpr)) {
+            if($element.attr(multiple_for_dpr)) {
                 src_original = $.trim($element.attr(multiple_for_dpr));
             }
             // bind onload event to iframe
@@ -184,7 +184,6 @@
                     data: {}
                 };
                 $.ajax(ajax_options).done(function (responseText) {
-                    log(responseText);
                     if (to_do === "append") {
                         $target.appendChild(responseText);
                     } else {
