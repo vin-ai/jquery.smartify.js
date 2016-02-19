@@ -47,6 +47,10 @@
 
         $.extend(settings, options || {});
 
+        if (multiple_for_dpr === null) {
+            multiple_for_dpr = settings.src_attr;
+        }
+
         /* Cache container as jQuery as object. */
         $container = (settings.container === undefined || settings.container === window) ?
             $window : $(settings.container);
