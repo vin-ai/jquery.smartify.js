@@ -144,9 +144,8 @@
             // but represents like function, call that function
             // and find target element
             if ($target === "callback()") {
-               $target[element_settings.effect](element_settings.effect_speed);
                // Call toggle_classes to toggle defined classes on target element
-               toggle_classes($target);
+               toggle_classes($element);
 
                element.loaded = true;
                remove_this_element();
