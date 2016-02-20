@@ -242,6 +242,7 @@
             //
             // Threshold update
             element_settings.threshold = parseInt($.trim($self.data("threshold")) || settings.threshold);
+            element_settings.effect = parseInt($.trim($self.data("effect")) || settings.effect);
 
             if ($self.data("toggle-class") || $self.data("add-class") || $self.data("remove-class")) {
                 // Copy class, just to prevent infinite recursion
