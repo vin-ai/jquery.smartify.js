@@ -1,45 +1,81 @@
+"use strict";
+
 module.exports = function(grunt) {
-    "use strict";
 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
-        uglify : {
-            options: {
-                banner: "/*! Smartify <%= pkg.version %> - MIT license - Copyright 2016 VINAY KUMAR SHARMA */\n"
-            },
-            target: {
-                files: {
-                    "jquery.smartify.min.js" : "jquery.smartify.js"
-                }
-            }
-        },
-        watch: {
-            files: ["*.js", "!*.min.js" ,"test/spec/*Spec.js"],
-            tasks: ["test"],
-        },
-        jshint: {
-            files: ["*.js", "!*.min.js" ,"test/spec/*Spec.js"],
-            options: {
-                jshintrc: ".jshintrc"
-            }
-        },
-        jasmine: {
-            src: ["jquery.smartify.js"],
-            options: {
-                helpers: "test/spec/*Helper.js",
-                specs: "test/spec/*Spec.js",
-                vendor: ["test/vendor/jquery-2.1.4.js", "test/vendor/jasmine-jquery.js"]
-            }
-        }
-    });
+  // Project configuration.
+  grunt.initConfig({
+    // Metadata.
+    pkg: grunt.file.readJSON("jquery.smartify.jquery.json"),
+    banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " +
+      "<%= grunt.template.today(\"yyyy-mm-dd\") %>\n" +
+      "<%= pkg.homepage ? \"* \" + pkg.homepage + \"\\n\" : \"\" %>" +
+      "* Copyright (c) <%= grunt.template.today(\"yyyy\") %> <%= pkg.author.name %>;" +
+      " Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %> */\n",
+    // Task configuration.
+    clean: {
+      files: ["dist"]
+    },
+    concat: {
+      options: {
+        banner: "<%= banner %>",
+        stripBanners: true
+      },
+      dist: {
+        src: ["src/<%= pkg.name %>.js"],
+        dest: "dist/<%= pkg.name %>.js"
+      },
+    },
+    uglify: {
+      options: {
+        banner: "<%= banner %>"
+      },
+      dist: {
+        src: "<%= concat.dist.dest %>",
+        dest: "dist/<%= pkg.name %>.min.js"
+      },
+    },
+    qunit: {
+      files: ["test/**/*.html"]
+    },
+    jshint: {
+      options: {
+        jshintrc: true
+      },
+      gruntfile: {
+        src: "Gruntfile.js"
+      },
+      src: {
+        src: ["src/**/*.js"]
+      },
+      test: {
+        src: ["test/**/*.js"]
+      },
+    },
+    watch: {
+      gruntfile: {
+        files: "<%= jshint.gruntfile.src %>",
+        tasks: ["jshint:gruntfile"]
+      },
+      src: {
+        files: "<%= jshint.src.src %>",
+        tasks: ["jshint:src", "qunit"]
+      },
+      test: {
+        files: "<%= jshint.test.src %>",
+        tasks: ["jshint:test", "qunit"]
+      },
+    },
+  });
 
-    grunt.loadNpmTasks("grunt-contrib-uglify");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-contrib-jasmine");
-    grunt.loadNpmTasks("grunt-contrib-watch");
+  // These plugins provide necessary tasks.
+  grunt.loadNpmTasks("grunt-contrib-clean");
+  grunt.loadNpmTasks("grunt-contrib-concat");
+  grunt.loadNpmTasks("grunt-contrib-uglify");
+  grunt.loadNpmTasks("grunt-contrib-qunit");
+  grunt.loadNpmTasks("grunt-contrib-jshint");
+  grunt.loadNpmTasks("grunt-contrib-watch");
 
-    //grunt.registerTask("test", ["jshint", "jasmine"]);
-    grunt.registerTask("test", ["jshint"]);
-    grunt.registerTask("default", ["test", "uglify"]);
+  // Default task.
+  grunt.registerTask("default", ["jshint", "qunit", "clean", "concat", "uglify"]);
+
 };
-

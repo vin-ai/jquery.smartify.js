@@ -21,6 +21,7 @@ then in your code do:
 
 This causes all images of class lazy to be lazy loaded.
 
-h3. 1.0.0-beta
+h3. Releases
 
-* First Beta Release of the Plugin
+- **1.0.0-beta:** First Beta Release of the Plugin
+- **1.0.0-rc:** Release candidate of the Plugin

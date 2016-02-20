@@ -1,6 +1,6 @@
 {
   "name": "jquery.smartify",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-rc",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -10,23 +10,26 @@
   },
   "author": "Vinay Kumar Sharma <vinaykrsharma@live.in>",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt qunit"
   },
+  "dependencies": {},
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-jshint": "~0.6.4",
-    "grunt-contrib-uglify": "~0.2.4",
-    "grunt-contrib-jasmine": "~0.5.2",
-    "grunt-contrib-watch": "~0.5.3"
+    "grunt-contrib-jshint": "~0.10.0",
+    "grunt-contrib-qunit": "~0.2.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-watch": "~0.4.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt": "~0.4.5"
   },
   "description": "jQuery Smartify loads images, calls Ajax, plays with css classes in on demand, while element is/or becoming visible in device Viewport.",
   "bugs": {
     "url": "https://github.com/vinaykrsharma/jquery.smartify/issues"
   },
-  "homepage": "http://www.vinay-sharma.com/jquery-plusings/jquery.smartify",
+  "homepage": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify",
   "main": "jquery.smartify.js",
   "files": [
-      "jquery.smartify.js",
+    "jquery.smartify.js"
   ],
   "keywords": [
     "smartify",

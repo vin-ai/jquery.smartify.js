@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>jQuery Smartify Demo</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="MobileOptimized" content="320">
+        <meta name="cleartype" content="on">
+        <meta name="author" content="https://plus.google.com/+VINAYKrSHARMA">
+        <meta name="description" content="jQuery Smartify loads images, calls Ajax, plays with css classes in on demand, while element is/or becoming visible in device Viewport.">
+        <meta name="keywords" content="jquery plugin, lazify, lazy load, smartify web, viewport">
+
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet'>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel='stylesheet'>
+
+        <style type="text/css">
+            body {
+                padding-top: 60px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>jQuery Smartify Demo</h1>
+            <hr>
+            <br>
+            <h3>Add, Remove or Toggle classes</h3>
+            
+            <p>&nbsp;</p>
+            <h5>Add class example</h5>
+            <pre><code>&lt;div class="smartify" data-add-class="alert alert-success"&gt;
+    &hellip;
+&lt;/div&gt;</code></pre>
+            <div class="smartify" data-add-class="alert alert-success">
+                <strong>Supurb!</strong>
+                class `alert` and `alert-success` appended successfully.
+            </div>
+            
+            <p>&nbsp;</p>
+            <h5>Remove and Add class together</h5>
+            <pre><code>&lt;div class="smartify alert alert-danger"
+     data-remove-class="alert-danger"
+     data-add-class="alert-info"&gt;
+    &hellip;
+&lt;/div&gt;</code></pre>
+            <div class="smartify alert alert-danger" data-remove-class="alert-danger" data-add-class="alert-info">
+                <strong>Supurb!</strong>
+                class `alert-danger` replaced by `alert-info`.
+            </div>
+            
+            <p>&nbsp;</p>
+            <h3>Load images example</h3>
+            <pre><code>&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;!-- LOAD HIGH RES IMAGES IF devicePixelRation is higher than 1 --&gt;
+        &lt;img class=&quot;img-responsive smartify&quot; ng-src=&quot;http://lorempixel.com/640/360/nature/1&quot;
+         ng-src-1-5x=&quot;http://lorempixel.com/960/540/nature/1&quot;
+         ng-src-2x=&quot;http://lorempixel.com/1280/720/nature/1&quot;
+         ng-src-3x=&quot;http://lorempixel.com/1920/1080/nature/1&quot;&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;img class=&quot;img-responsive smartify&quot; ng-src=&quot;http://lorempixel.com/640/360/nature/2&quot;&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;img class=&quot;img-responsive smartify&quot; ng-src=&quot;http://lorempixel.com/640/360/nature/3&quot;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;img class=&quot;img-responsive smartify&quot; ng-src=&quot;http://lorempixel.com/640/360/nature/4&quot;&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;img class=&quot;img-responsive smartify&quot; ng-src=&quot;http://lorempixel.com/640/360/nature/5&quot;&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-md-4&quot;&gt;
+        &lt;img class=&quot;img-responsive smartify&quot; ng-src=&quot;http://lorempixel.com/640/360/nature/6&quot;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <img class="img-responsive smartify" ng-src="http://lorempixel.com/640/360/nature/1"
+                     ng-src-1-5x="http://lorempixel.com/960/540/nature/1"
+                     ng-src-2x="http://lorempixel.com/1280/720/nature/1"
+                     ng-src-3x="http://lorempixel.com/1920/1080/nature/1">
+                </div>
+                <div class="col-md-4">
+                    <img class="img-responsive smartify" ng-src="http://lorempixel.com/640/360/nature/2">
+                </div>
+                <div class="col-md-4">
+                    <img class="img-responsive smartify" ng-src="http://lorempixel.com/640/360/nature/3">
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <img class="img-responsive smartify" ng-src="http://lorempixel.com/640/360/nature/4">
+                </div>
+                <div class="col-md-4">
+                    <img class="img-responsive smartify" ng-src="http://lorempixel.com/640/360/nature/5">
+                </div>
+                <div class="col-md-4">
+                    <img class="img-responsive smartify" ng-src="http://lorempixel.com/640/360/nature/6">
+                </div>
+            </div>
+
+            <p>&nbsp;</p>
+            <h3>Load href to iframe</h3>
+            <pre><code>&lt;a href=&quot;http://lorempixel.com/1920/1080/cats/1&quot; class=&quot;smartify&quot;
+    data-target=&quot;#that_frame&quot;&gt;Load href to iFrame&lt;/a&gt;
+&lt;iframe src=&quot;http://lorempixel.com/1/1&quot; id=&quot;that_frame&quot; allowtransparency=&quot;true&quot;
+    height=&quot;500&quot; width=&quot;100%&quot;&gt;&lt;/iframe&gt;</code></pre>
+            <p>&nbsp;</p>
+            <a href="http://lorempixel.com/1920/1080/cats/1" class="smartify" data-target="#that_frame" data-effect="show">Load href to iFrame</a>
+            <iframe src="http://lorempixel.com/1/1" id="that_frame" allowtransparency="true" style="" height="500" width="100%"></iframe>
+
+            <p>&nbsp;</p>
+            <h3>Load href to parent &lt;div&gt; element</h3>
+            <pre><code>&lt;div&gt;
+    &lt;a class=&quot;smartify&quot; href=&quot;./ajax-content.html&quot;
+        data-target=&quot;parent()&quot;&gt;
+        Load Ajax Content file to parent of this &amp;lt;a&amp;gt; element
+    &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+            
+            <p>&nbsp;</p>
+            <div>
+                <a class="smartify" href="./ajax-content.html" data-target="parent()">Load Ajax Content file to parent of this &lt;a&gt; element</a>
+            </div>
+
+            <p>&nbsp;</p>
+            <h3>Load href to #xhr_container element</h3>
+            <pre><code>&lt;a class=&quot;smartify&quot; href=&quot;./ajax-content.html&quot;
+    data-target=&quot;#xhr_container&quot;&gt;
+    Load Ajax Content file to #xhr_container
+&lt;/a&gt;
+&lt;div id=&quot;xhr_container&quot;&gt;&lt;/div&gt;</code></pre>
+            
+            <p>&nbsp;</p>
+            <a class="smartify" href="./ajax-content.html" data-target="#xhr_container">Load Ajax Content file to #xhr_container</a>
+            <div id="xhr_container">
+            </div>
+
+
+            <nav class="navbar navbar-default navbar-fixed-bottom smartify"
+                data-remove-class="navbar-fixed-bottom"
+                data-add-class="navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                            data-target="#bs-example-navbar-collapse-7" aria-expanded="false">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Brand</a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-7">
+                        <ul class="nav navbar-nav">
+                            <li class="active"><a href="#">Home</a></li>
+                            <li><a href="#">Link</a></li>
+                            <li><a href="#">Link</a></li>
+                            <li><a href="#">Navbar class replacement example</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <p>&nbsp;</p>
+            <h3>Load Twitter Widget</h3>
+            
+            <p>Place HTML for twitter widget:</p>
+            <pre><code>&lt;a class=&quot;twitter-timeline&quot;
+   href=&quot;https://twitter.com/vinaykrsharma&quot;
+   data-widget-id=&quot;700578868491497472&quot;&gt;
+   Tweets by @vinaykrsharma
+&lt;/a&gt;</code></pre>
+            
+            <p>&nbsp;</p>
+            <p>Then smartify the &lt;a.twitter-timeline&gt; tag:</p>
+            <pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+    $('.twitter-timeline').smartify({
+        threshold: 200, // Just before 200px
+        appear: function () {
+            var d = document, s = &quot;script&quot;, id = &quot;twitter-wjs&quot;;
+            var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+            if (!d.getElementById(id)) {
+                js = d.createElement(s);
+                js.id = id;
+                js.src = p + &quot;://platform.twitter.com/widgets.js&quot;;
+                fjs.parentNode.insertBefore(js, fjs);
+            }
+        }
+    });
+&lt;/script&gt;</code></pre>
+            <p>&nbsp;</p>
+            <a class="twitter-timeline"  href="https://twitter.com/vinaykrsharma" data-widget-id="700578868491497472" data-effect="show">Tweets by @vinaykrsharma</a>
+            <p>&nbsp;</p>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="../dist/jquery.smartify.min.js"></script>
+        <script type="text/javascript">
+            $('.smartify').smartify();
+            $('.twitter-timeline').smartify({
+                threshold: 200, // Just before 200px
+                appear: function () {
+                    var d = document, s = "script", id = "twitter-wjs";
+                    var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+                    if (!d.getElementById(id)) {
+                        js = d.createElement(s);
+                        js.id = id;
+                        js.src = p + "://platform.twitter.com/widgets.js";
+                        fjs.parentNode.insertBefore(js, fjs);
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

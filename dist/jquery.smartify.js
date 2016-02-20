@@ -1,34 +1,33 @@
-/**
- * Copyright 2016, VINAY KUMAR SHARMA
- * Licensed under the MIT license.
- * http://www.vinay-sharma.com/jquery-plugins/license/
- *
- * @author Vinay Kumar Sharma <vinaykrsharma@live.in>
- * @desc A small plugin that checks whether elements are within
- *       the user visible viewport of a web browser, and applies
- *       the defined action.
- *       only accounts for vertical position, not horizontal.
- * @version 1.0.0-beta
- */
-;
+/*! jQuery Smartify - v1.0.0-rc - 2016-02-21
+* http://www.vinay-sharma.com/jquery-plugins/jquery.smartify
+* Copyright (c) 2016 VINAY KUMAR SHARMA; Licensed MIT */
 (function ($, window, document, undefined) {
+    // window object to calculate width, height and bind scroll event
     var $window = $(window);
+
+    // Container element, where Smartify will look for elements
     var $container = $window;
 
+    // If device supports `devicePixelRation`, else default will be 1
     var device_pixel_ration = window.devicePixelRatio || 1;
+
+    // This variable will be used to load high res images for high res device
     var multiple_for_dpr = null;
     if (device_pixel_ration > 1) {
         // `ng-src` for normal
         // Retina support
-        // ng-src-dpr-1_5x
-        // ng-src-dpr-2x
-        // ng-src-dpr-3x
-        multiple_for_dpr = "ng-src-dpr-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1_5x"));
+        // ng-src-1_5x
+        // ng-src-2x
+        // ng-src-3x
+        multiple_for_dpr = "ng-src-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1-5x"));
     }
 
-    var log = console && console.log ? function (d) {
+    var log;
+    /* jshint ignore: start */
+    log = console && console.log ? function (d) {
         console.log(d);
     } : $.noop;
+    /* jshint ignore: end */
 
     $.fn.smartify = function (options) {
         var elements = this;
@@ -36,7 +35,7 @@
             threshold: 0,
             failure_limit: 0,
             event: "scroll",
-            effect: "show",
+            effect: "fadeIn",
             container: window,
             src_attr: "ng-src",
             skip_invisible: true,
@@ -48,11 +47,15 @@
 
         $.extend(settings, options || {});
 
+        if (multiple_for_dpr === null) {
+            multiple_for_dpr = settings.src_attr;
+        }
+
         /* Cache container as jQuery as object. */
         $container = (settings.container === undefined || settings.container === window) ?
             $window : $(settings.container);
 
-        function update() {
+        var refresh = function () {
             var counter = 0;
 
             elements.each(function () {
@@ -63,8 +66,8 @@
                 if ($.above_the_top(this, settings.threshold) ||
                     $.left_of_begin(this, settings.threshold)) {
                     /* Nothing. */
-                } else if (!$.below_the_fold(this, settings.threshold)
-                    && !$.right_of_fold(this, settings.threshold)) {
+                } else if (!$.below_the_fold(this, settings.threshold) &&
+                    !$.right_of_fold(this, settings.threshold)) {
                     $this.trigger("appear");
                     /* if we found an image we'll load, reset the counter */
                     counter = 0;
@@ -75,20 +78,20 @@
                 }
             });
 
-        }
+        };
 
-        function remove_loaded_elements() {
-            /* Remove element from list so it is not looped next time. */
+        var remove_loaded_elements = function () {
+            /* Remove current element from list so it can not be looped again. */
             var temp = $.grep(elements, function (element) {
                 return !(element.loaded || element.no_src_attr);
             });
             elements = $(temp);
-        }
+        };
 
-        function toggle_classes($element) {
-            var toggle_class = $element.data('toggle-class');
-            var add_class = $element.data('add-class');
-            var remove_class = $element.data('remove-class');
+        var toggle_classes = function ($element) {
+            var toggle_class = $element.data("toggle-class");
+            var add_class = $element.data("add-class");
+            var remove_class = $element.data("remove-class");
 
             if (toggle_class) {
                 $element.toggleClass(toggle_class);
@@ -99,50 +102,80 @@
             if (add_class) {
                 $element.toggleClass(add_class);
             }
-        }
+        };
 
-        function load_for_image(element, element_settings, remove_this_element) {
+        var load_for_image = function (element, element_settings, remove_this_element) {
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
+
+            if($element.attr(multiple_for_dpr)) {
+                src_original = $.trim($element.attr(multiple_for_dpr));
+            }
+
             $("<img />").bind("load", function () {
                 $element.hide();
                 $element.attr("src", src_original);
                 $element[element_settings.effect](element_settings.effect_speed);
-
                 element.loaded = true;
                 remove_this_element();
-                element_settings.load(element, elements, element_settings, undefined, undefined);
+                element_settings.load(element, elements, element_settings);
             }).attr("src", src_original);
-        }
+        };
 
-        function load_for_iframe(element, element_settings, remove_this_element) {
+        var load_for_iframe = function (element, element_settings, remove_this_element) {
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
-            $element.attr('src', src_original);
-            $element[element_settings.effect](element_settings.effect_speed);
-            element.loaded = true;
-            remove_this_element();
-            element_settings.load(element, elements, element_settings, undefined, undefined);
-        }
 
-        function load_for_anchor(element, element_settings, remove_this_element) {
+            if($element.attr(multiple_for_dpr)) {
+                src_original = $.trim($element.attr(multiple_for_dpr));
+            }
+            // bind onload event to iframe
+            // to 
+            $element.on("load", function() {
+                $element[element_settings.effect](element_settings.effect_speed);
+                element.loaded = true;
+                remove_this_element();
+                element_settings.load(element, elements, element_settings);
+            }).attr("src", src_original);
+        };
+
+        var load_for_anchor = function (element, element_settings, remove_this_element) {
             var $element = $(element);
-            var url = $element.attr('href');
-            var to_do = $element.data('do');
-            var $target = $element.data('target');
+            var url = $element.attr("href");
+            var to_do = $element.data("do");
+            var $target = $element.data("target");
             // If target is not a html tag not CSS selector,
             // but represents like function, call that function
             // and find target element
-            if ($target === 'parent()') {
+            if ($target === "callback()") {
+               // Call toggle_classes to toggle defined classes on target element
+               toggle_classes($element);
+
+               element.loaded = true;
+               remove_this_element();
+               // Do not call load callback here, just need to call
+               // `appear` callback, which already has been called
+               // element_settings.load(element, elements, element_settings);
+               //
+               // and return
+               return;
+           } else if ($target === "parent()") {
                 $target = $element.parent();
             } else if ($target) {
                 $target = $($target);
             }
 
-            if ($target.is('iframe')) {
+            if ($target.is("iframe")) {
                 $target.attr(element_settings.src_attr, url);
                 // just call `load_for_iframe` here
                 load_for_iframe($target.get(0), element_settings, remove_this_element);
+                // $target[element_settings.effect](element_settings.effect_speed);
+                // Call toggle_classes to toggle defined classes on target element
+                toggle_classes($target);
+            } else if ($target.is("img")) {
+                $target.attr(element_settings.src_attr, url);
+                // just call `load_for_iframe` here
+                load_for_image($target.get(0), element_settings, remove_this_element);
                 // $target[element_settings.effect](element_settings.effect_speed);
                 // Call toggle_classes to toggle defined classes on target element
                 toggle_classes($target);
@@ -154,8 +187,7 @@
                     data: {}
                 };
                 $.ajax(ajax_options).done(function (responseText) {
-                    log(responseText);
-                    if (to_do === 'append') {
+                    if (to_do === "append") {
                         $target.appendChild(responseText);
                     } else {
                         $target.html(responseText);
@@ -167,17 +199,17 @@
 
                     element.loaded = true;
                     remove_this_element();
-                    element_settings.load(element, elements, element_settings, responseText, undefined);
+                    element_settings.load(element, elements, element_settings, responseText);
                 }).fail(function (jqXHR, textStatus) {
                     element_settings.load(element, elements, element_settings, jqXHR, textStatus);
                 });
             }
-        }
+        };
 
         /* Fire one scroll event per scroll. Not one scroll event per element. */
         if (settings.event.indexOf("scroll") === 0) {
             $container.bind(settings.event, function () {
-                return update();
+                return refresh();
             });
         }
 
@@ -193,18 +225,18 @@
             // found in data attributes
             // and keep original unchanged to others
             var element_settings = $.extend({}, settings);
-            var src = $.trim($self.attr('src')) || false;
+            var src = $.trim($self.attr("src")) || false;
             var src_original = $.trim($self.attr(element_settings.src_attr)) || false;
             //
             // Types
-            var is_a = $self.is('a');
-            var is_img = $self.is('img');
-            var is_iframe = $self.is('iframe');
+            var is_a = $self.is("a");
+            var is_img = $self.is("img");
+            var is_iframe = $self.is("iframe");
             //
             // Threshold update
-            element_settings.threshold = parseInt($.trim($self.data('threshold')) || settings.threshold);
+            element_settings.threshold = parseInt($.trim($self.data("threshold")) || settings.threshold);
 
-            if ($self.data('toggle-class') || $self.data('add-class') || $self.data('remove-class')) {
+            if ($self.data("toggle-class") || $self.data("add-class") || $self.data("remove-class")) {
                 // Copy class, just to prevent infinite recursion
                 var prev_on_load = element_settings.load;
                 element_settings.load = function (element, elements, element_settings, jqXHR, textStatus) {
@@ -220,19 +252,19 @@
 
             // If element is in the collection, but don't have value of `src_attr` attribute
             if ((is_img || is_iframe) && !src_original) {
-                log('%cElement has no ' + element_settings.src_attr + ' defined to load',
-                    'color: #ff9900;');
+                log("%cElement has no " + element_settings.src_attr + " defined to load",
+                    "color: #ff9900;");
                 // Remove element from array so it is not looped next time.
                 self.no_src_attr = true;
                 remove_loaded_elements();
-                return
+                return;
             }
 
             /* When appear is triggered load original image. */
             $self.one("appear", function () {
                 // Return from here, if image is already loaded
                 if (this.loaded) {
-                    return
+                    return;
                 }
 
                 // If after appear callback has defined
@@ -245,25 +277,24 @@
                 if (is_img) {
                     load_for_image(self, element_settings, remove_loaded_elements);
                 } else if (is_a) {
-                    if ($self.data('target')) {
+                    if ($self.data("target")) {
                         load_for_anchor(self, element_settings, remove_loaded_elements);
                     } else {
-                        log('%cAn Anchor Tag must have defined data-target="" attribute ' +
-                            'to load response content in!', 'color: #ff9900;');
+                        log("%cAn Anchor Tag must have defined data-target=\"\" attribute " +
+                            "to load response content in!", "color: #ff9900;");
                     }
                 } else if (is_iframe) {
                     load_for_iframe(self, element_settings, remove_loaded_elements);
                 } else {
+                    remove_loaded_elements();
                     element_settings.load(self, elements, element_settings);
-                    // if(ng-src && attr_src === undefined && !(is_a || is_iframe)) {
-                    // load_an_image using DOM
-                    // $element.css("background-image", "url('" + src_original + "')");
-                    // }
+                    // Here we will not work to load background image for an element
+                    // If want so, the just use `data-add-class=""`. Where
+                    // class will have to set background property
+                    // e.g: <div class="smartify" data-add-class="bg-img"></div>
                 }
             });
 
-            /* When wanted event is triggered load original image */
-            /* by triggering appear.                              */
             if (element_settings.event.indexOf("scroll")) {
                 $self.bind(element_settings.event, function () {
                     if (!self.loaded) {
@@ -285,31 +316,31 @@
             });
         }
 
-        /* Check if something appears when window is resized. */
-        $window.bind("resize", update);
-        /* Force initial check if images should appear. */
-        $(document).ready(update);
+        // Because on viewport resize some elements could be visible
+        // due to CSS3 @media query
+        $window.bind("resize", refresh);
+        // Initial Smartify at document ready, prior to scroll
+        $(document).ready(refresh);
 
         return this;
     };
 
-    function container_top() {
-        if (typeof $container.scrollTop === 'function') {
+    var container_top = function () {
+        if (typeof $container.scrollTop === "function") {
             return $container.scrollTop();
         }
         return $container.offset().top;
-    }
+    };
 
-    function container_left() {
-        if (typeof $container.scrollLeft === 'function') {
+    var container_left = function () {
+        if (typeof $container.scrollLeft === "function") {
             return $container.scrollLeft();
         }
         return $container.offset().left;
-    }
+    };
 
     /* Convenience methods in jQuery namespace.           */
     /* Use as  $.below_the_fold(element, 100) */
-
     $.below_the_fold = function (element, threshold) {
         return $container.height() + container_top() <= $(element).offset().top - threshold;
     };
@@ -327,8 +358,10 @@
     };
 
     $.visible_in_viewport = function (element, threshold) {
-        return !$.right_of_fold(element, threshold) && !$.left_of_begin(element, threshold)
-            && !$.below_the_fold(element, threshold) && !$.above_the_top(element, threshold);
+        return !($.right_of_fold(element, threshold) &&
+                $.left_of_begin(element, threshold) &&
+                $.below_the_fold(element, threshold) &&
+                $.above_the_top(element, threshold));
     };
 
     /* Custom selectors for your convenience.   */

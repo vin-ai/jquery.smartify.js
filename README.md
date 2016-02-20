@@ -9,21 +9,39 @@ Plugin is inspired by [jQuery Lazyload](https://github.com/tuupola/jquery_lazylo
 ### Plans & Features
 
 - [ ] Multiple Elements Support
-- [ ] Retina Support
-- [ ] Element.getBoundingClientRect() support
+- [ ] Multiple Source for High Res(Retina) devices
 
-### Example:
+## Getting Started
+Download the [production version][min] or the [development version][max].
 
-```javascript
-$(".smartify").smartify({
-    threshold: 200,
-    appear: function ($element, settings) {
-        console.log('Appear Called:');
-        console.log($element);
-    },
-    load: function ($element, settings) {
-        console.log('Load Called:');
-        console.log($element);
-    }
+[min]: https://raw.github.com/vinaykrsharma/jquery.smartify/master/dist/jquery.smartify.min.js
+[max]: https://raw.github.com/vinaykrsharma/jquery.smartify/master/dist/jquery.smartify.js
+
+In your web page:
+
+```html
+<!--
+HTML AND ELEMENT HERE TO TARGET BY SMARTIFY
+FOR DETAILS SEE DEMO
+-->
+<script src="jquery.js"></script>
+<script src="dist/jquery.smartify.min.js"></script>
+<script>
+jQuery(function($) {
+  $('.smartify').smartify(); // "smartify"
 });
+</script>
 ```
+
+## Documentation
+
+[Docs](http://www.vinay-sharma.com/jquery-plugins/jquery.smartify)
+
+## Examples
+
+[See Examples Here](http://www.vinay-sharma.com/jquery-plugins/jquery.smartify/demo.html)
+
+## Release History
+
+- 1.0.0-rc First Release of the plugin
+
