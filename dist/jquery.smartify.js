@@ -1,20 +1,17 @@
-/**
- * Copyright 2016, VINAY KUMAR SHARMA
- * Licensed under the MIT license.
- * http://www.vinay-sharma.com/jquery-plugins/license/
- *
- * @author Vinay Kumar Sharma <vinaykrsharma@live.in>
- * @desc A small plugin that checks whether elements are within
- *       the user visible viewport of a web browser, and applies
- *       the defined action.
- *       only accounts for vertical position, not horizontal.
- * @version 1.0.0-rc
- */
+/*! jQuery Smartify - v1.0.0-rc - 2016-02-21
+* http://www.vinay-sharma.com/jquery-plugins/jquery.smartify
+* Copyright (c) 2016 VINAY KUMAR SHARMA; Licensed MIT */
 (function ($, window, document, undefined) {
+    // window object to calculate width, height and bind scroll event
     var $window = $(window);
+
+    // Container element, where Smartify will look for elements
     var $container = $window;
 
+    // If device supports `devicePixelRation`, else default will be 1
     var device_pixel_ration = window.devicePixelRatio || 1;
+
+    // This variable will be used to load high res images for high res device
     var multiple_for_dpr = null;
     if (device_pixel_ration > 1) {
         // `ng-src` for normal
@@ -25,9 +22,12 @@
         multiple_for_dpr = "ng-src-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1-5x"));
     }
 
-    var log = console && console.log ? function (d) {
+    var log;
+    /* jshint ignore: start */
+    log = console && console.log ? function (d) {
         console.log(d);
     } : $.noop;
+    /* jshint ignore: end */
 
     $.fn.smartify = function (options) {
         var elements = this;
@@ -35,7 +35,7 @@
             threshold: 0,
             failure_limit: 0,
             event: "scroll",
-            effect: "show",
+            effect: "fadeIn",
             container: window,
             src_attr: "ng-src",
             skip_invisible: true,
@@ -286,16 +286,15 @@
                 } else if (is_iframe) {
                     load_for_iframe(self, element_settings, remove_loaded_elements);
                 } else {
+                    remove_loaded_elements();
                     element_settings.load(self, elements, element_settings);
-                    // if(ng-src && attr_src === undefined && !(is_a || is_iframe)) {
-                    // load_an_image using DOM
-                    // $element.css("background-image", "url('" + src_original + "')");
-                    // }
+                    // Here we will not work to load background image for an element
+                    // If want so, the just use `data-add-class=""`. Where
+                    // class will have to set background property
+                    // e.g: <div class="smartify" data-add-class="bg-img"></div>
                 }
             });
 
-            /* When wanted event is triggered load original image */
-            /* by triggering appear.                              */
             if (element_settings.event.indexOf("scroll")) {
                 $self.bind(element_settings.event, function () {
                     if (!self.loaded) {
@@ -317,9 +316,10 @@
             });
         }
 
-        /* Check if something appears when window is resized. */
+        // Because on viewport resize some elements could be visible
+        // due to CSS3 @media query
         $window.bind("resize", refresh);
-        /* Force initial check if images should appear. */
+        // Initial Smartify at document ready, prior to scroll
         $(document).ready(refresh);
 
         return this;

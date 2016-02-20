@@ -1,0 +1,36 @@
+{
+  "name": "jquery.smartify",
+  "title": "jQuery Smartify",
+  "description": "jQuery Smartify loads images, calls Ajax, plays with css classes in on demand, while element is/or becoming visible in device Viewport.",
+  "version": "1.0.0-rc",
+  "homepage": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify",
+  "author": {
+    "name": "VINAY KUMAR SHARMA",
+    "email": "vinaykrsharma@live.in",
+    "url": "http://www.vinay-sharma.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vinaykrsharma/jquery.smartify"
+  },
+  "bugs": "https://github.com/vinaykrsharma/jquery.smartify/issues",
+  "docs": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify",
+  "demo": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify/demo.html",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify/blob/master/LICENSE-MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "*"
+  },
+  "keywords": [
+    "smartify",
+    "jQuery Smartify",
+    "jquery-plugin",
+    "lazify",
+    "lazy load",
+    "smartweb"
+  ]
+}

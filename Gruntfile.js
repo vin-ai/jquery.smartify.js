@@ -1,91 +1,81 @@
-/*!
- * Smartify's Gruntfile
- * http://www.vinay-sharma.com/jquery-plugins/jquery.smartify
- * Copyright 2016 VINAY KUMAR SHARMA <vinaykrsharma@live.in>
- * Licensed under MIT (https://github.com/vinaykrsharma/jquery.smartify/blob/master/LICENSE)
- */
+"use strict";
 
 module.exports = function(grunt) {
-    "use strict";
 
-    // Use Unix newlines
-    grunt.util.linefeed = "\n";
+  // Project configuration.
+  grunt.initConfig({
+    // Metadata.
+    pkg: grunt.file.readJSON("jquery.smartify.jquery.json"),
+    banner: "/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - " +
+      "<%= grunt.template.today(\"yyyy-mm-dd\") %>\n" +
+      "<%= pkg.homepage ? \"* \" + pkg.homepage + \"\\n\" : \"\" %>" +
+      "* Copyright (c) <%= grunt.template.today(\"yyyy\") %> <%= pkg.author.name %>;" +
+      " Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %> */\n",
+    // Task configuration.
+    clean: {
+      files: ["dist"]
+    },
+    concat: {
+      options: {
+        banner: "<%= banner %>",
+        stripBanners: true
+      },
+      dist: {
+        src: ["src/<%= pkg.name %>.js"],
+        dest: "dist/<%= pkg.name %>.js"
+      },
+    },
+    uglify: {
+      options: {
+        banner: "<%= banner %>"
+      },
+      dist: {
+        src: "<%= concat.dist.dest %>",
+        dest: "dist/<%= pkg.name %>.min.js"
+      },
+    },
+    qunit: {
+      files: ["test/**/*.html"]
+    },
+    jshint: {
+      options: {
+        jshintrc: true
+      },
+      gruntfile: {
+        src: "Gruntfile.js"
+      },
+      src: {
+        src: ["src/**/*.js"]
+      },
+      test: {
+        src: ["test/**/*.js"]
+      },
+    },
+    watch: {
+      gruntfile: {
+        files: "<%= jshint.gruntfile.src %>",
+        tasks: ["jshint:gruntfile"]
+      },
+      src: {
+        files: "<%= jshint.src.src %>",
+        tasks: ["jshint:src", "qunit"]
+      },
+      test: {
+        files: "<%= jshint.test.src %>",
+        tasks: ["jshint:test", "qunit"]
+      },
+    },
+  });
 
-    grunt.initConfig({
-        pkg: grunt.file.readJSON("package.json"),
-        banner: "/*!\n" +
-                " * jQuery Smartify v<%= pkg.version %>\n" +
-                " * <%= pkg.homepage %>\n" +
-                " * Licensed under the <%= pkg.licence %>\n" +
-                " * Copyright <%= grunt.template.today(\"yyyy\") %> <%= pkg.author %>" +
-                " */\n",
-        jshint: {
-            files: ["*.js", "!*.min.js" ,"test/spec/*Spec.js"],
-            options: {
-                jshintrc: ".jshintrc"
-            }
-        },
-        connect: {
-            server: {
-                options: {
-                    base: ".",
-                    port: 9999
-                }
-            }
-        },
-        uglify : {
-            options: {
-                compress: {
-                  warnings: false
-                },
-                mangle: true,
-                preserveComments: /^!|@preserve|@license|@cc_on/i
-            },
-            build: {
-                src: "src/<%= pkg.name %>.js",
-                dest: "build/<%= pkg.name %>.min.js"
-            },
-            target: {
-                files: {
-                    "<%= pkg.name %>.min.js" : "<%= pkg.name %>.js"
-                }
-            }
-        },
-        watch: {
-            files: ["*.js", "!*.min.js" ,"test/spec/*Spec.js"],
-            tasks: ["test"],
-        }/*,
-        jasmine: {
-            test: {
-                src: "test/specs/jasmine.js",
-                options: {
-                    helpers: "test/specs/helpers/*helper.js",
-                    specs: "test/specs/*spec.js",
-                    vendor: ["test/vendor/jquery-2.1.4.js", "test/vendor/jasmine-jquery.js"]
-                }
-            }
-        }*/
-    });
+  // These plugins provide necessary tasks.
+  grunt.loadNpmTasks("grunt-contrib-clean");
+  grunt.loadNpmTasks("grunt-contrib-concat");
+  grunt.loadNpmTasks("grunt-contrib-uglify");
+  grunt.loadNpmTasks("grunt-contrib-qunit");
+  grunt.loadNpmTasks("grunt-contrib-jshint");
+  grunt.loadNpmTasks("grunt-contrib-watch");
 
-    grunt.loadNpmTasks("grunt-contrib-uglify");
-    grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-contrib-watch");
-    // grunt.loadNpmTasks("grunt-contrib-jasmine");
-    // grunt.loadNpmTasks("grunt-jasmine-runner");
-    grunt.loadNpmTasks("grunt-contrib-connect");
+  // Default task.
+  grunt.registerTask("default", ["jshint", "qunit", "clean", "concat", "uglify"]);
 
-    grunt.registerTask("build", ["jshint", "uglify", "connect", "watch", "jasmine"]);
-    grunt.registerTask("default", "start web server for jasmine tests in browser", function() {
-        grunt.task.run("jshint");
-        // grunt.task.run('jasmine:modules');
- 
-        grunt.event.once("connect.test.listening", function( host, port ) {
-           var specRunnerUrl = "http://" + host + ":" + port + "/demo.html";
-           grunt.log.writeln("Jasmine specs available at: " + specRunnerUrl);
-           require("open")(specRunnerUrl);
-        });
- 
-        grunt.task.run("connect:test:keepalive");
-    });
 };
-
