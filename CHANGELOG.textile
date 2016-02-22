@@ -6,14 +6,16 @@ h2. Getting Started
 
 Smartify is a jQuery Plugin. So, you will required to include jQuery too. Include them both in end of your HTML code before <strong>&lt;/body&gt;</strong>:
 
-<pre><script src="jquery.js" type="text/javascript"></script>
-<script src="jquery.smartify.js" type="text/javascript"></script></pre>
+<pre>
+	&lt;script src=&quot;jquery.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+	&lt;script src=&quot;jquery.smartify.js&quot; type=&quot;text/javascript&quot;&gt;&lt;/script&gt;
+</pre>
 
 All elements to take control by Smartify required to add a class value `.smartify` and some other attributes:
 
 <strong>For Example</strong>
 
-<pre><img class="smartify" ng-src="img/example.jpg" width="640" height="480"></pre>
+<pre><img class="smartify" sm-src="img/example.jpg" width="640" height="480"></pre>
 
 then in your code do:
 
@@ -23,5 +25,4 @@ This causes all images of class lazy to be lazy loaded.
 
 h3. Releases
 
-- **1.0.0-beta:** First Beta Release of the Plugin
 - **1.0.0-rc:** Release candidate of the Plugin

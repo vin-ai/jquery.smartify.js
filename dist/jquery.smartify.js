@@ -1,4 +1,4 @@
-/*! jQuery Smartify - v1.0.0-rc - 2016-02-21
+/*! jQuery Smartify - v1.0.0-rc - 2016-02-22
 * http://www.vinay-sharma.com/jquery-plugins/jquery.smartify
 * Copyright (c) 2016 VINAY KUMAR SHARMA; Licensed MIT */
 (function ($, window, document, undefined) {
@@ -13,27 +13,16 @@
 
     // This variable will be used to load high res images for high res device
     var multiple_for_dpr = null;
-    if (device_pixel_ration > 1) {
-        // `ng-src` for normal
-        // Retina support
-        // ng-src-1_5x
-        // ng-src-2x
-        // ng-src-3x
-        multiple_for_dpr = "ng-src-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1-5x"));
-    }
 
-    var log;
-    /* jshint ignore: start */
-    log = console && console.log ? function (d) {
+    var log = console && console.log ? function (d) {
         console.log(d);
     } : $.noop;
-    /* jshint ignore: end */
 
     $.fn.smartify = function (options) {
         var elements = this;
         var settings = {
             threshold: 0,
-            failure_limit: 0,
+            limit_retry: 0,
             event: "scroll",
             effect: "fadeIn",
             container: window,
@@ -46,6 +35,15 @@
         };
 
         $.extend(settings, options || {});
+
+        if (device_pixel_ration > 1) {
+            // `ng-src` for normal
+            // Retina support
+            // ng-src-1_5x
+            // ng-src-2x
+            // ng-src-3x
+            multiple_for_dpr = settings.src_attr + "-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1-5x"));
+        }
 
         if (multiple_for_dpr === null) {
             multiple_for_dpr = settings.src_attr;
@@ -66,13 +64,12 @@
                 if ($.above_the_top(this, settings.threshold) ||
                     $.left_of_begin(this, settings.threshold)) {
                     /* Nothing. */
-                } else if (!$.below_the_fold(this, settings.threshold) &&
-                    !$.right_of_fold(this, settings.threshold)) {
+                } else if (!$.below_the_fold(this, settings.threshold) && !$.right_of_fold(this, settings.threshold)) {
                     $this.trigger("appear");
                     /* if we found an image we'll load, reset the counter */
                     counter = 0;
                 } else {
-                    if (++counter > settings.failure_limit) {
+                    if (++counter > settings.limit_retry) {
                         return false;
                     }
                 }
@@ -108,7 +105,7 @@
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
 
-            if($element.attr(multiple_for_dpr)) {
+            if ($element.attr(multiple_for_dpr)) {
                 src_original = $.trim($element.attr(multiple_for_dpr));
             }
 
@@ -126,12 +123,12 @@
             var $element = $(element);
             var src_original = $.trim($element.attr(element_settings.src_attr));
 
-            if($element.attr(multiple_for_dpr)) {
+            if ($element.attr(multiple_for_dpr)) {
                 src_original = $.trim($element.attr(multiple_for_dpr));
             }
             // bind onload event to iframe
-            // to 
-            $element.on("load", function() {
+            // to
+            $element.on("load", function () {
                 $element[element_settings.effect](element_settings.effect_speed);
                 element.loaded = true;
                 remove_this_element();
@@ -148,18 +145,18 @@
             // but represents like function, call that function
             // and find target element
             if ($target === "callback()") {
-               // Call toggle_classes to toggle defined classes on target element
-               toggle_classes($element);
+                // Call toggle_classes to toggle defined classes on target element
+                toggle_classes($element);
 
-               element.loaded = true;
-               remove_this_element();
-               // Do not call load callback here, just need to call
-               // `appear` callback, which already has been called
-               // element_settings.load(element, elements, element_settings);
-               //
-               // and return
-               return;
-           } else if ($target === "parent()") {
+                element.loaded = true;
+                remove_this_element();
+                // Do not call load callback here, just need to call
+                // `appear` callback, which already has been called
+                // element_settings.load(element, elements, element_settings);
+                //
+                // and return
+                return;
+            } else if ($target === "parent()") {
                 $target = $element.parent();
             } else if ($target) {
                 $target = $($target);
@@ -359,9 +356,9 @@
 
     $.visible_in_viewport = function (element, threshold) {
         return !($.right_of_fold(element, threshold) &&
-                $.left_of_begin(element, threshold) &&
-                $.below_the_fold(element, threshold) &&
-                $.above_the_top(element, threshold));
+        $.left_of_begin(element, threshold) &&
+        $.below_the_fold(element, threshold) &&
+        $.above_the_top(element, threshold));
     };
 
     /* Custom selectors for your convenience.   */
