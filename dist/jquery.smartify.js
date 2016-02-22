@@ -26,7 +26,7 @@
             event: "scroll",
             effect: "fadeIn",
             container: window,
-            src_attr: "ng-src",
+            src_attr: "sm-src",
             skip_invisible: true,
             placeholder: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
             // Callback functions
@@ -37,11 +37,11 @@
         $.extend(settings, options || {});
 
         if (device_pixel_ration > 1) {
-            // `ng-src` for normal
-            // Retina support
-            // ng-src-1_5x
-            // ng-src-2x
-            // ng-src-3x
+            // `src_attr` for normal
+            // Retina support with combination of `src_attr` value
+            // `src_attr`-1-5x
+            // `src_attr`-2x
+            // `src_attr`-3x
             multiple_for_dpr = settings.src_attr + "-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1-5x"));
         }
 
