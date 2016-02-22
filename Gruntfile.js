@@ -1,5 +1,3 @@
-"use strict";
-
 module.exports = function(grunt) {
 
   // Project configuration.
@@ -13,7 +11,7 @@ module.exports = function(grunt) {
       " Licensed <%= _.pluck(pkg.licenses, \"type\").join(\", \") %> */\n",
     // Task configuration.
     clean: {
-      files: ["dist"]
+      files: ["dist", "build"]
     },
     concat: {
       options: {
@@ -38,8 +36,13 @@ module.exports = function(grunt) {
       files: ["test/**/*.html"]
     },
     jshint: {
+      files: ['Gruntfile.js', 'src/**/*.js', 'test/**/*.js'],
       options: {
-        jshintrc: true
+        globals: {
+          jshintrc: true,
+          jQuery: true,
+          module: true
+        }
       },
       gruntfile: {
         src: "Gruntfile.js"
@@ -52,18 +55,8 @@ module.exports = function(grunt) {
       },
     },
     watch: {
-      gruntfile: {
-        files: "<%= jshint.gruntfile.src %>",
-        tasks: ["jshint:gruntfile"]
-      },
-      src: {
-        files: "<%= jshint.src.src %>",
-        tasks: ["jshint:src", "qunit"]
-      },
-      test: {
-        files: "<%= jshint.test.src %>",
-        tasks: ["jshint:test", "qunit"]
-      },
+      files: ['<%= jshint.files %>'],
+      tasks: ['jshint', 'qunit']
     },
   });
 
@@ -76,6 +69,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-contrib-watch");
 
   // Default task.
-  grunt.registerTask("default", ["jshint", "qunit", "clean", "concat", "uglify"]);
+  grunt.registerTask("test", ["jshint", "qunit"]);
+  grunt.registerTask("default", ["clean", "jshint", "qunit", "concat", "uglify"]);
 
 };
