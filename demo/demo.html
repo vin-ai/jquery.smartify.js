@@ -12,19 +12,33 @@
         <meta name="description" content="jQuery Smartify loads images, calls Ajax, plays with css classes in on demand, while element is/or becoming visible in device Viewport.">
         <meta name="keywords" content="jquery plugin, lazify, lazy load, smartify web, viewport">
 
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet'>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel='stylesheet'>
+        <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet'>
+        <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel='stylesheet'>
 
         <style type="text/css">
             body {
                 padding-top: 60px;
             }
+            h1, h2, h3 {
+                font-family: "Open Sans";
+                font-weight: 300;
+            }
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>jQuery Smartify Demo</h1>
-            <hr>
+            <h1>jQuery Smartify Demo <small>(βeta)</small></h1>
+            <br>
+            <h2>Features and Benefits!</h2>
+            <ul>
+                <li>Boost your web application load time.</li>
+                <li>Dynamically load contents via Ajax call.</li>
+                <li>Infinite load items, such as products to sale. Best for e-commerce websites.</li>
+                <li>Load images when visible in viewport.</li>
+                <li>Load dynamic images for different DPI supports. Such as 3x for retina display.</li>
+                <li>Toggle, Add or Remove element classes.</li>
+                <li>Or just call User defined callback function.</li>
+            </ul>
             <br>
             <h3>Add, Remove or Toggle classes</h3>
             
@@ -121,7 +135,7 @@
             <p>&nbsp;</p>
             <h3>Load href to parent &lt;div&gt; element</h3>
             <pre><code>&lt;div&gt;
-    &lt;a class=&quot;smartify&quot; href=&quot;./ajax-content.html&quot;
+    &lt;a class=&quot;smartify&quot; href=&quot;./demo/ajax-content.html&quot;
         data-target=&quot;parent()&quot;&gt;
         Load Ajax Content file to parent of this &amp;lt;a&amp;gt; element
     &lt;/a&gt;
@@ -129,19 +143,19 @@
             
             <p>&nbsp;</p>
             <div>
-                <a class="smartify" href="./ajax-content.html" data-target="parent()">Load Ajax Content file to parent of this &lt;a&gt; element</a>
+                <a class="smartify" href="./demo/ajax-content.html" data-target="parent()">Load Ajax Content file to parent of this &lt;a&gt; element</a>
             </div>
 
             <p>&nbsp;</p>
             <h3>Load href to #xhr_container element</h3>
-            <pre><code>&lt;a class=&quot;smartify&quot; href=&quot;./ajax-content.html&quot;
+            <pre><code>&lt;a class=&quot;smartify&quot; href=&quot;./demo/ajax-content.html&quot;
     data-target=&quot;#xhr_container&quot;&gt;
     Load Ajax Content file to #xhr_container
 &lt;/a&gt;
 &lt;div id=&quot;xhr_container&quot;&gt;&lt;/div&gt;</code></pre>
             
             <p>&nbsp;</p>
-            <a class="smartify" href="./ajax-content.html" data-target="#xhr_container">Load Ajax Content file to #xhr_container</a>
+            <a class="smartify" href="./demo/ajax-content.html" data-target="#xhr_container">Load Ajax Content file to #xhr_container</a>
             <div id="xhr_container">
             </div>
 
@@ -201,7 +215,7 @@
             <a class="twitter-timeline"  href="https://twitter.com/vinaykrsharma" data-widget-id="700578868491497472" data-effect="show">Tweets by @vinaykrsharma</a>
             <p>&nbsp;</p>
         </div>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
         <script src="../dist/jquery.smartify.min.js"></script>
         <script type="text/javascript">
             $('.smartify').smartify();
