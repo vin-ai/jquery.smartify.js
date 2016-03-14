@@ -40,7 +40,7 @@
             container: window,
             src_attr: "sm-src",
             skip_invisible: true,
-            placeholder: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            placeholder: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTEwNTEuMzYyMikiIC8+PC9zdmc+",
             // Callback functions
             appear: $.noop,
             load: $.noop
