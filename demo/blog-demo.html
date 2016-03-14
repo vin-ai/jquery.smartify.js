@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>jQuery Smartify Demo</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="HandheldFriendly" content="true">
+        <meta name="MobileOptimized" content="320">
+        <meta name="cleartype" content="on">
+        <meta name="author" content="https://plus.google.com/+VINAYKrSHARMA">
+        <meta name="description" content="jQuery Smartify loads images, calls Ajax, plays with css classes in on demand, while element is/or becoming visible in device Viewport.">
+        <meta name="keywords" content="jquery plugin, lazify, lazy load, smartify web, viewport">
+
+        <link href='//fonts.googleapis.com/css?family=Open+Sans:300,400' rel='stylesheet'>
+        <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css" rel='stylesheet'>
+        <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/styles/default.min.css" rel="stylesheet">
+
+        <style type="text/css">
+            body {
+                padding-top: 60px;
+            }
+            h1, h2, h3 {
+                font-family: "Open Sans";
+                font-weight: 300;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-9">
+                    <h1>jQuery Smartify Demo <small>(βeta)</small></h1>
+                    <br>
+                    <div class="addthis_native_toolbox"></div>
+                    <br>
+                    <h2>Features and Benefits!</h2>
+                    <ul>
+                        <li>Boost your web application load time.</li>
+                        <li>Dynamically load contents via Ajax call.
+                            <br>
+                            &nbsp;&nbsp;
+                            <small class="text-muted">e.g: Load each section on just before becoming visible.</small>
+                        </li>
+                        <li>Infinite load items, such as products to sale. Best for e-commerce websites.</li>
+                        <li>Load images when visible in viewport.</li>
+                        <li>Load dynamic images for different DPI supports. Such as 3x for retina display.</li>
+                        <li>Toggle, Add or Remove element classes.</li>
+                        <li>Or just call User defined callback function.</li>
+                    </ul>
+                    <br>
+                    <h3>Add, Remove or Toggle classes</h3>
+                    
+                    <p>&nbsp;</p>
+                    <h5>Add class example</h5>
+<pre><code>&lt;div class="smartify" data-add-class="alert alert-success"&gt;
+    &hellip;
+&lt;/div&gt;</code></pre>
+                    <div class="smartify" data-add-class="alert alert-success">
+                        <strong>Supurb!</strong>
+                        class `alert` and `alert-success` appended successfully.
+                    </div>
+                    
+                    <p>&nbsp;</p>
+                    <h5>Remove and Add class together</h5>
+<pre><code>&lt;div class="smartify alert alert-danger"
+  data-remove-class="alert-danger"
+  data-add-class="alert-info"&gt;
+    &hellip;
+&lt;/div&gt;</code></pre>
+                    <div class="smartify alert alert-danger" data-remove-class="alert-danger" data-add-class="alert-info">
+                        <strong>Supurb!</strong>
+                        class `alert-danger` replaced with `alert-info`.
+                    </div>
+                    
+                    <p>&nbsp;</p>
+                    <h3>Load images example</h3>
+            <pre><code>&lt;div class=&quot;row&quot;&gt;
+&lt;div class=&quot;col-xs-6 col-sm-4&quot;&gt;
+    &lt;!-- LOAD HIGH RES IMAGES IF devicePixelRation is higher than 1 --&gt;
+    &lt;img class=&quot;img-responsive smartify&quot; sm-src=&quot;http://lorempixel.com/640/360/nature/1&quot;
+     sm-src-1-5x=&quot;http://lorempixel.com/960/540/nature/1&quot;
+     sm-src-2x=&quot;http://lorempixel.com/1280/720/nature/1&quot;
+     sm-src-3x=&quot;http://lorempixel.com/1920/1080/nature/1&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;col-xs-6 col-sm-4&quot;&gt;
+    &lt;img class=&quot;img-responsive smartify&quot; sm-src=&quot;http://lorempixel.com/640/360/nature/2&quot;&gt;
+&lt;/div&gt;
+&lt;div class=&quot;col-xs-6 col-sm-4&quot;&gt;
+    &lt;img class=&quot;img-responsive smartify&quot; sm-src=&quot;http://lorempixel.com/640/360/nature/3&quot;&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;row&quot;&gt;
+    &lt;div class=&quot;col-xs-6 col-sm-4&quot;&gt;
+        &lt;img class=&quot;img-responsive smartify&quot; sm-src=&quot;http://lorempixel.com/640/360/nature/4&quot;&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-xs-6 col-sm-4&quot;&gt;
+        &lt;img class=&quot;img-responsive smartify&quot; sm-src=&quot;http://lorempixel.com/640/360/nature/5&quot;&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-xs-6 col-sm-4&quot;&gt;
+        &lt;img class=&quot;img-responsive smartify&quot; sm-src=&quot;http://lorempixel.com/640/360/nature/6&quot;&gt;
+    &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                    
+                    
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-4">
+                            <img class="img-responsive smartify" sm-src="http://lorempixel.com/640/360/nature/1"
+                             sm-src-1-5x="http://lorempixel.com/960/540/nature/1"
+                             sm-src-2x="http://lorempixel.com/1280/720/nature/1"
+                             sm-src-3x="http://lorempixel.com/1920/1080/nature/1">
+                        </div>
+                        <div class="col-xs-6 col-sm-4">
+                            <img class="img-responsive smartify" sm-src="http://lorempixel.com/640/360/nature/2">
+                        </div>
+                        <div class="col-xs-6 col-sm-4">
+                            <img class="img-responsive smartify" sm-src="http://lorempixel.com/640/360/nature/3">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-6 col-sm-4">
+                            <img class="img-responsive smartify" sm-src="http://lorempixel.com/640/360/nature/4">
+                        </div>
+                        <div class="col-xs-6 col-sm-4">
+                            <img class="img-responsive smartify" sm-src="http://lorempixel.com/640/360/nature/5">
+                        </div>
+                        <div class="col-xs-6 col-sm-4">
+                            <img class="img-responsive smartify" sm-src="http://lorempixel.com/640/360/nature/6">
+                        </div>
+                    </div>
+
+                    <p>&nbsp;</p>
+                    <h3>Load href to iframe</h3>
+<pre><code>&lt;a href=&quot;http://lorempixel.com/1920/1080/cats/1&quot; class=&quot;smartify&quot;
+    data-target=&quot;#that_frame&quot;&gt;Load href to iFrame&lt;/a&gt;
+
+&lt;iframe src=&quot;http://lorempixel.com/1/1&quot; id=&quot;that_frame&quot; allowtransparency=&quot;true&quot;
+    height=&quot;500&quot; width=&quot;100%&quot;&gt;&lt;/iframe&gt;</code></pre>
+                    <p>&nbsp;</p>
+                    <a href="http://lorempixel.com/1920/1080/cats/1" class="smartify" data-target="#that_frame">Load href to iFrame</a>
+                    <iframe src="http://lorempixel.com/1/1" id="that_frame" allowtransparency="true" style="" height="500" width="100%"></iframe>
+
+                    <p>&nbsp;</p>
+                    <h3>Load href to parent &lt;div&gt; element</h3>
+<pre><code>&lt;div&gt;
+    &lt;a class=&quot;smartify&quot; href=&quot;./demo/ajax-content.html&quot;
+        data-target=&quot;parent()&quot;&gt;
+            Load Ajax Content file to parent of this &amp;lt;a&amp;gt; element
+    &lt;/a&gt;
+&lt;/div&gt;</code></pre>
+                    
+                    <p>&nbsp;</p>
+                    <div>
+                        <a class="smartify" href="./demo/ajax-content.html" data-target="parent()">Load Ajax Content file to parent of this &lt;a&gt; element</a>
+                    </div>
+
+                    <p>&nbsp;</p>
+                    <h3>Load href to #xhr_container element</h3>
+<pre><code>&lt;a class=&quot;smartify&quot; href=&quot;./demo/ajax-content.html&quot;
+    data-target=&quot;#xhr_container&quot;&gt;
+        Load Ajax Content file to #xhr_container
+&lt;/a&gt;
+&lt;div id=&quot;xhr_container&quot;&gt;&lt;/div&gt;</code></pre>
+                    
+                    <p>&nbsp;</p>
+                    <a class="smartify" href="./demo/ajax-content.html" data-target="#xhr_container">Load Ajax Content file to #xhr_container</a>
+                    <div id="xhr_container">
+                    </div>
+
+
+                    <nav class="navbar navbar-default navbar-fixed-bottom smartify"
+                        data-remove-class="navbar-fixed-bottom"
+                        data-add-class="navbar-fixed-top">
+                        <div class="container-fluid">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#sm-example-navbar" aria-expanded="false">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <a class="navbar-brand" href="#">Brand</a>
+                            </div>
+                            <div class="collapse navbar-collapse" id="sm-example-navbar">
+                                <ul class="nav navbar-nav">
+                                    <li class="active"><a href="#">Home</a></li>
+                                    <li><a href="/jquery-plugins/jquery.smartify">Smartify</a></li>
+                                    <li><a href="https://github.com/vinaykrsharma/jquery.smartify">Download</a></li>
+                                    <li><a href="#">Navbar class replacement example</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </nav>
+                    <p>&nbsp;</p>
+                    <h3>Load Twitter Widget</h3>
+                    
+                    <p>Place HTML for twitter widget:</p>
+                    <pre><code>&lt;a class=&quot;twitter-timeline&quot;
+           href=&quot;https://twitter.com/vinaykrsharma&quot;
+           data-widget-id=&quot;700578868491497472&quot;&gt;
+           Tweets by @vinaykrsharma
+        &lt;/a&gt;</code></pre>
+                    
+                    <p>&nbsp;</p>
+                    <p>Then smartify the &lt;a.twitter-timeline&gt; tag:</p>
+<pre><code>$('.twitter-timeline').smartify({
+    threshold: 200, // Just before 200px
+    appear: function () {
+        var d = document, s = &quot;script&quot;, id = &quot;twitter-wjs&quot;;
+        var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+        if (!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = p + &quot;://platform.twitter.com/widgets.js&quot;;
+            fjs.parentNode.insertBefore(js, fjs);
+        }
+    }
+});</code></pre>
+                    <p>&nbsp;</p>
+                    <a class="twitter-timeline"  href="https://twitter.com/vinaykrsharma" data-widget-id="700578868491497472">Tweets by @vinaykrsharma</a>
+                    <p>&nbsp;</p>
+                </div>
+                <div class="col-md-3">
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- MD Rect -->
+                    <ins class="adsbygoogle"
+                         style="display:inline-block;width:300px;height:250px"
+                         data-ad-client="ca-pub-2506679117428139"
+                         data-ad-slot="5568680603"></ins>
+                    <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </div>
+            </div>
+        </div>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.2.0/highlight.min.js"></script>
+        <script src="//cdn.rawgit.com/vinaykrsharma/jquery.smartify/master/src/jquery.smartify.js"></script>
+        <script type="text/javascript">
+            if(window.hljs) {
+                hljs.configure({tabReplace:'    '});
+                hljs.initHighlightingOnLoad();
+            }
+            $('.smartify').smartify();
+            $('.twitter-timeline').smartify({
+                threshold: 200, // Just before 200px
+                appear: function () {
+                    var d = document, s = "script", id = "twitter-wjs";
+                    var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
+                    if (!d.getElementById(id)) {
+                        js = d.createElement(s);
+                        js.id = id;
+                        js.src = p + "://platform.twitter.com/widgets.js";
+                        fjs.parentNode.insertBefore(js, fjs);
+                    }
+                }
+            });
+        </script>
+        <script>
+            var addthis_config = {"data_track_addressbar": true};
+            var addthis_share = {url:'http://www.vinay-sharma.com/jquery-plugins/jquery.smartify/demo.html'};
+        </script>
+        <script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=vinaysharma1986"></script>
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-29522960-1', 'idangero.us');
+            ga('send', 'pageview');      
+        </script>
