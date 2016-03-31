@@ -184,6 +184,35 @@
                     </div>
                 </div>
             </nav>
+
+            <p>&nbsp;</p>
+            <h3>Play HTML5 Video</h3>
+
+            <pre><code>&lt;video controls&gt;
+    &lt;source src=&quot;http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4&quot; type=&quot;video/mp4&quot;&gt;
+    &lt;source src=&quot;http://www.quirksmode.org/html5/videos/big_buck_bunny.webm&quot; type=&quot;video/webm&quot;&gt;
+    &lt;source src=&quot;http://www.quirksmode.org/html5/videos/big_buck_bunny.ogv&quot; type=&quot;video/ogg&quot;&gt;
+    &lt;p&gt;Your browser does not support HTML5 video.&lt;/p&gt;
+&lt;/video&gt;</code></pre>
+
+            <p>and smartify</p>
+            <pre><code>&lt;script type=&quot;text/javascript&quot;&gt;
+    $('video').smartify({
+        appear: function(element) {
+            if (element.paused) {
+                element.play();
+            }
+        }
+    });
+&lt;/script&gt;</code></pre>
+
+            <video controls>
+                <source src="http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4" type="video/mp4">
+                <source src="http://www.quirksmode.org/html5/videos/big_buck_bunny.webm" type="video/webm">
+                <source src="http://www.quirksmode.org/html5/videos/big_buck_bunny.ogv" type="video/ogg">
+                <p>Your browser does not support HTML5 video.</p>
+            </video>
+
             <p>&nbsp;</p>
             <h3>Load Twitter Widget</h3>
             
@@ -229,6 +258,13 @@
                         js.id = id;
                         js.src = p + "://platform.twitter.com/widgets.js";
                         fjs.parentNode.insertBefore(js, fjs);
+                    }
+                }
+            });
+            $('video').smartify({
+                appear: function(element) {
+                    if (element.paused) {
+                        element.play();
                     }
                 }
             });

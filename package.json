@@ -1,6 +1,6 @@
 {
   "name": "jquery.smartify",
-  "version": "1.0.0-rc",
+  "version": "1.0.0",
   "engines": {
     "node": ">= 0.8.0"
   },
@@ -22,7 +22,7 @@
     "grunt-contrib-clean": "~0.4.0",
     "grunt": "~0.4.5"
   },
-  "description": "jQuery Smartify loads images, calls Ajax, plays with css classes in on demand, while element is/or becoming visible in device Viewport.",
+  "description": "jQuery Smartify boosts web application load times and lazy loads images, calls Ajax, plays with css classes in/on demand, while element is/or being visible in device viewport.",
   "bugs": {
     "url": "https://github.com/vinaykrsharma/jquery.smartify/issues"
   },

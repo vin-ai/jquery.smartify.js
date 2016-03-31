@@ -1,6 +1,6 @@
 # jQuery Smartify
 
-jQuery Smartify boosts web application load times and loads images, calls Ajax, plays with css classes in/on demand, while element is/or being visible in device Viewport.
+jQuery Smartify boosts web application load times and lazy loads images, calls Ajax, plays with css classes in/on demand, while element is/or being visible in device viewport.
 
 It has full capability of [jQuery Lazyload](https://github.com/tuupola/jquery_lazyload), but with more elements coverage and advanced. This doesn't only work for &lt;img&gt;, have capabality to smartify any elements!
 
@@ -20,17 +20,31 @@ Plugin is inspired by [jQuery Lazyload](https://github.com/tuupola/jquery_lazylo
 
 ## Getting Started
 
-Download the [production version][min] or the [development version][max].
+Preferred method:
+* Install with [Bower]: `$ bower install smartify`
 
+Other methods:
+* [Download zipball of latest release][zipball].
+* Download the latest production or development files individually:
+  * *[min]* (Production version)
+  * *[max]* (Development version)
+
+**Note:** *jquery.smartify.js* have a dependency on [jQuery]
+
+<!-- section links -->
+
+[Bower]: http://bower.io/
+[zipball]: https://github.com/vinaykrsharma/jquery.smartify/archive/1.0.0.zip
+[jQuery]: http://jquery.com/
 [min]: https://raw.github.com/vinaykrsharma/jquery.smartify/master/dist/jquery.smartify.min.js
 [max]: https://raw.github.com/vinaykrsharma/jquery.smartify/master/dist/jquery.smartify.js
 
-In your web page:
+
+Quick Start
+-----------
 
 ```html
-<!--
-Elements to Smartify
--->
+<!-- Elements to Smartify -->
 <img class="smartify" sm-src="/static/path/to/img.png">
 
 ...
@@ -45,15 +59,50 @@ jQuery(function($) {
 </script>
 ```
 
-## Documentation
+Examples
+--------
+
+For some working examples of Smartify, visit the [examples page].
+
+<!-- section links -->
+
+[examples page]: http://www.vinay-sharma.com/jquery-plugins/jquery.smartify/demo.html
+
+
+Documentation
+-------------
 
 [Docs](http://www.vinay-sharma.com/jquery-plugins/jquery.smartify)
 
-## Examples
+Browser Support
+---------------
 
-[See Examples Here](http://www.vinay-sharma.com/jquery-plugins/jquery.smartify/demo.html)
+Manually Tested Platforms on Linux and Mac OS X only ()
 
-## Release History
+* Chrome (Linux/Mac OS X/Android 5.1+)
+* Firefox 40+ (Linux/Mac OS X/Android 5.1+)
+* Safari 5+ (Mac OS X)
+* Opera 11+  (Linux/Mac OS X/Android 5.1+)
 
-- 1.0.0-rc First Release of the plugin
+Issues
+------
 
+Discovered a bug? Please create an issue here on GitHub!
+
+https://github.com/vinaykrsharma/jquery.smartify/issues
+
+Versioning
+----------
+
+For transparency and insight into our release cycle, releases will be numbered 
+with the following format:
+
+`<major>.<minor>.<patch>`
+
+And constructed with the following guidelines:
+
+* Breaking backwards compatibility bumps the major
+* New additions without breaking backwards compatibility bumps the minor
+* Bug fixes and misc changes bump the patch
+
+For more information on semantic versioning, please visit http://semver.org/.
