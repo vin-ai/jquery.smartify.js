@@ -7,13 +7,11 @@
  * http://www.vinay-sharma.com/jquery-plugins/license/
  *
  * @author Vinay Kumar Sharma <vinaykrsharma@live.in>
- * @desc A small plugin that checks whether elements are within
- *       the user visible viewport of a web browser, and applies
- *       the defined action.
- *       only accounts for vertical position, not horizontal.
- * @version 1.0.0-rc
+ * @desc A smart plugin triggers defined action/event
+ * when elements are visible in the viewport of device.
+ * @version 1.0.0
  */
-(function ($, window, document, undefined) {
+(function ($, window, undefined) {
     // window object to calculate width, height and bind scroll event
     var $window = $(window);
 
@@ -26,23 +24,33 @@
     // This variable will be used to load high res images for high res device
     var multiple_for_dpr = null;
 
-    var log = console && console.log ? function (d) {
-        console.log(d);
+    var log = console && console.log ? function (d, s) {
+        console.log(d, s || '');
     } : $.noop;
 
     $.fn.smartify = function (options) {
         var elements = this;
         var settings = {
+            // Trigger action just before nth pixels of element
             threshold: 0,
+            // Limit the reload try of sources for images or Ajax
             limit_retry: 0,
+            // Trigger the action of elements on container event
             event: "scroll",
+            // Effect to be apply on element after source successfully loaded
             effect: "fadeIn",
+            // Container to bind defined `event`
             container: window,
+            // Original source of the element to be loaded/called
             src_attr: "sm-src",
+            // Load/call action if element is actually visible in viewport or even invisible after appeared in viewport
             skip_invisible: true,
+            // Default image source to be placed after plugin initialized to all smartify elements
             placeholder: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTEwNTEuMzYyMikiIC8+PC9zdmc+",
             // Callback functions
+            // Calls when element is/or being visible in viewport
             appear: $.noop,
+            // Calls when source URL loaded successfully to element
             load: $.noop
         };
 
@@ -189,6 +197,7 @@
                 // Call toggle_classes to toggle defined classes on target element
                 toggle_classes($target);
             } else {
+
                 // More options from data attribute of $element
                 var ajax_options = {
                     method: "GET",
@@ -208,6 +217,12 @@
 
                     element.loaded = true;
                     remove_this_element();
+
+                    // Load ajax to target and smartify elements using defined css selector
+                    if (element_settings.load_target_and_smartify && element_settings.elements_selector) {
+                        $target.find(element_settings.elements_selector).smartify(settings);
+                    }
+
                     element_settings.load(element, elements, element_settings, responseText);
                 }).fail(function (jqXHR, textStatus) {
                     element_settings.load(element, elements, element_settings, jqXHR, textStatus);
@@ -226,14 +241,17 @@
             var self = this;
             var $self = $(self);
             //
+            // clone to change for this element if some configurations
+            // found in data attributes
+            // and keep original unchanged for others
+            var element_settings = $.extend({}, settings, $self.data());
+
+            element_settings.threshold = parseInt(element_settings.threshold);
+
+            //
             // Set default flags
             self.loaded = false;
             self.no_src_attr = false;
-            //
-            // clone to change for this element if some configurations
-            // found in data attributes
-            // and keep original unchanged to others
-            var element_settings = $.extend({}, settings);
             var src = $.trim($self.attr("src")) || false;
             var src_original = $.trim($self.attr(element_settings.src_attr)) || false;
             //
@@ -241,9 +259,6 @@
             var is_a = $self.is("a");
             var is_img = $self.is("img");
             var is_iframe = $self.is("iframe");
-            //
-            // Threshold update
-            element_settings.threshold = parseInt($.trim($self.data("threshold")) || settings.threshold);
 
             if ($self.data("toggle-class") || $self.data("add-class") || $self.data("remove-class")) {
                 // Copy class, just to prevent infinite recursion
@@ -254,7 +269,7 @@
                 };
             }
 
-            // If img/iframe element has no/empty src attribute use placeholder.
+            // If img/iframe element has no/empty src attribute use placeholder till it loads original.
             if ((is_img || is_iframe) && !src) {
                 $self.attr("src", element_settings.placeholder);
             }
@@ -327,9 +342,9 @@
 
         // Because on viewport resize some elements could be visible
         // due to CSS3 @media query
-        $window.bind("resize", refresh);
+        $window.bind("resize orientationchange", refresh);
         // Initial Smartify at document ready, prior to scroll
-        $(document).ready(refresh);
+        $(window.document).ready(refresh);
 
         return this;
     };
@@ -394,4 +409,64 @@
         }
     });
 
-})(jQuery, window, document);
+    /**
+     * jQuery Smartify Section
+     * http://www.vinay-sharma.com/jquery-plugins/jquery.smartify
+     *
+     * Copyright VINAY KUMAR SHARMA
+     * Released under the MIT license
+     * http://www.vinay-sharma.com/jquery-plugins/license/
+     *
+     * @author Vinay Kumar Sharma <vinaykrsharma@live.in>
+     * @desc This plugin is a wrapper plugin for jQuery Smartify
+     * to enhance usability and performance by binding on section/block
+     * wise elements instead whole elements at once.
+     * @version 1.0.0
+     */
+    $.fn.smartify_section = function (options, children_options) {
+        var settings = {
+            threshold: 0,
+            on_trigger: "visible",
+            persist_trigger: false,
+            skip_invisible: true,
+            children_selector: ".smartify-children"
+        };
+        $.extend(settings, options || {});
+        this.each(function () {
+            var $this = $(this);
+            var this_settings = $.extend({}, settings, $this.data());
+            var target = $this.attr("href");
+            if (!target) {
+                target = this_settings.target;
+            }
+            var elements;
+            if (!target) {
+                elements = $(this_settings.children_selector);
+            } else {
+                elements = $(target).find(this_settings.children_selector);
+            }
+            var callback_function = function (e) {
+                elements.smartify(children_options);
+                // Check if any manual event fired rather than smartify visible
+                if (e.target) {
+                    // Just scroll 2px to account smartify make children load and visible
+                    // log($(e.target).scrollTop());
+                    $window.scrollTop($window.scrollTop() + 2);
+                    // setTimeout("$(window).scroll();", 100);
+                }
+            };
+            if (this_settings.on_trigger === "visible") {
+                // Smartify itself
+                $this.smartify({threshold: this_settings.threshold, appear: callback_function});
+            } else if (this_settings.on_trigger) {
+                // Smartify Children on click
+                if (this_settings.persist_trigger) {
+                    $this.on(this_settings.on_trigger, callback_function);
+                } else {
+                    $this.one(this_settings.on_trigger, callback_function);
+                }
+            }
+        });
+    };
+
+})(jQuery, window);

@@ -1,8 +1,8 @@
 {
   "name": "jquery.smartify",
   "title": "jQuery Smartify",
-  "description": "jQuery Smartify loads images, calls Ajax, plays with css classes in on demand, while element is/or becoming visible in device Viewport.",
-  "version": "1.0.0-rc",
+  "description": "jQuery Smartify boosts web application load times and lazy loads images, calls Ajax, plays with css classes in/on demand, while element is/or being visible in device viewport.",
+  "version": "1.0.0",
   "homepage": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify",
   "author": {
     "name": "VINAY KUMAR SHARMA",
