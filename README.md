@@ -2,9 +2,7 @@
 
 jQuery Smartify boosts web application load times and lazy loads images, calls Ajax, plays with css classes in/on demand, while element is/or being visible in device viewport.
 
-It has full capability of [jQuery Lazyload](https://github.com/tuupola/jquery_lazyload), but with more elements coverage and advanced. This doesn't only work for &lt;img&gt;, have capabality to smartify any elements!
-
-Plugin is inspired by [jQuery Lazyload](https://github.com/tuupola/jquery_lazyload) created by [Mika Tuupola](https://github.com/tuupola).
+It has full capability of [jQuery Lazyload], but with more elements coverage and advanced. This don't only works for &lt;img&gt;, have capabality to smartify any elements!
 
 ### Features, Benefits & Plans
 
@@ -26,18 +24,10 @@ Preferred method:
 Other methods:
 * [Download zipball of latest release][zipball].
 * Download the latest production or development files individually:
-  * *[min]* (Production version)
-  * *[max]* (Development version)
+  * *[min version]* (Production version)
+  * *[max version]* (Development version)
 
 **Note:** *jquery.smartify.js* have a dependency on [jQuery]
-
-<!-- section links -->
-
-[Bower]: http://bower.io/
-[zipball]: https://github.com/vinaykrsharma/jquery.smartify/archive/1.0.0.zip
-[jQuery]: http://jquery.com/
-[min]: https://raw.github.com/vinaykrsharma/jquery.smartify/master/dist/jquery.smartify.min.js
-[max]: https://raw.github.com/vinaykrsharma/jquery.smartify/master/dist/jquery.smartify.js
 
 
 Quick Start
@@ -64,20 +54,16 @@ Examples
 
 For some working examples of Smartify, visit the [examples page].
 
-<!-- section links -->
-
-[examples page]: http://www.vinay-sharma.com/jquery-plugins/jquery.smartify/demo.html
-
 
 Documentation
 -------------
 
-[Docs](http://www.vinay-sharma.com/jquery-plugins/jquery.smartify)
+[Docs]
 
 Browser Support
 ---------------
 
-Manually Tested Platforms on Linux and Mac OS X only ()
+Manually Tested Platforms on Linux and Mac OS X only
 
 * Chrome (Linux/Mac OS X/Android 5.1+)
 * Firefox 40+ (Linux/Mac OS X/Android 5.1+)
@@ -87,9 +73,20 @@ Manually Tested Platforms on Linux and Mac OS X only ()
 Issues
 ------
 
-Discovered a bug? Please create an issue here on GitHub!
+Discovered a bug? Please create an issue here on GitHub [Issues]!
 
-https://github.com/vinaykrsharma/jquery.smartify/issues
+Grunt Server
+------------
+
+Running local [Grunt] server to test and see examples
+
+**Start server:**
+
+```
+$ grunt server
+```
+
+then visit http://localhost:8080/demo/ on browser
 
 Versioning
 ----------
@@ -106,3 +103,14 @@ And constructed with the following guidelines:
 * Bug fixes and misc changes bump the patch
 
 For more information on semantic versioning, please visit http://semver.org/.
+
+[Bower]: http://bower.io/
+[Grunt]: http://gruntjs.com
+[zipball]: https://github.com/vinaykrsharma/jquery.smartify/archive/1.0.0.zip
+[Issues]: https://github.com/vinaykrsharma/jquery.smartify/issues
+[jQuery]: http://jquery.com/
+[min version]: https://raw.github.com/vinaykrsharma/jquery.smartify/master/dist/jquery.smartify.min.js
+[max version]: https://raw.github.com/vinaykrsharma/jquery.smartify/master/dist/jquery.smartify.js
+[examples page]: http://www.vinay-sharma.com/jquery-plugins/jquery.smartify/demo.html
+[Docs]: http://www.vinay-sharma.com/jquery-plugins/jquery.smartify
+[jQuery Lazyload]: https://github.com/tuupola/jquery_lazyload
