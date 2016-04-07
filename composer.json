@@ -1,0 +1,24 @@
+{
+  "name": "vinaykrsharma/jquery.smartify",
+  "description": "jQuery Smartify boosts web application load times and lazy loads images, calls Ajax, plays with css classes in/on demand, while element is/or being visible in device viewport.",
+  "keywords": [
+    "smartify",
+    "jQuery Smartify",
+    "jquery-plugin",
+    "lazify",
+    "lazy load",
+    "smartweb",
+    "ecosystem:jquery"
+  ],
+  "homepage": "http://www.vinay-sharma.com/jquery-plugins/jquery.smartify",
+  "authors": [{
+    "name": "VINAY KUMAR SHARMA",
+    "email": "vinaykrsharma@live.in",
+    "url": "http://www.vinay-sharma.com"
+  }],
+  "support": {
+    "issues": "https://github.com/vinaykrsharma/jquery.smartify/issues"
+  },
+  "author": "VINAY KUMAR SHARMA",
+  "license": "MIT"
+}
