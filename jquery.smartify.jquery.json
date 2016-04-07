@@ -23,7 +23,7 @@
     }
   ],
   "dependencies": {
-    "jquery": "*"
+    "jquery": ">=1.7"
   },
   "keywords": [
     "smartify",
