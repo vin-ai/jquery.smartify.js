@@ -28,18 +28,25 @@
         console.log(d, s || '');
     } : $.noop;
 
+    var History = window.history;
+    var history_enabled = History !== undefined && typeof History.pushState === "function";
+
     $.fn.smartify = function (options) {
         var elements = this;
         var settings = {
-            // Trigger action just before nth pixels of element
+            // Trigger action just before nth pixels of element being visible
             threshold: 0,
+            // Trigger action just before nth pixels of element being hidden
+            threshold_disappear: 0,
             // Limit the reload try of sources for images or Ajax
             limit_retry: 0,
             // Trigger the action of elements on container event
             event: "scroll",
-            // Effect to be apply on element after source successfully loaded
+            // Transition effect to be apply on element after source successfully loaded
             effect: "fadeIn",
-            // Container to bind defined `event`
+            // Effect speed, default 400 as jQuery has
+            effect_speed: 400,
+            // Container to bind defined `event`, default to window
             container: window,
             // Original source of the element to be loaded/called
             src_attr: "sm-src",
@@ -48,50 +55,55 @@
             // Default image source to be placed after plugin initialized to all smartify elements
             placeholder: "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxIiBoZWlnaHQ9IjEiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDAsLTEwNTEuMzYyMikiIC8+PC9zdmc+",
             // Callback functions
-            // Calls when element is/or being visible in viewport
+            // Calls when element becomes visible in viewport
             appear: $.noop,
+            // Calls when element hides from viewport
+            disappear: $.noop,
             // Calls when source URL loaded successfully to element
-            load: $.noop
+            load: $.noop,
+            // Calls when error occurred during source load
+            error: $.noop
         };
 
         $.extend(settings, options || {});
 
+        // Source attribute to read if device_pixel_ration is greater than 1 else default for normal
+        // it helps to load high resolution image for retina devices
+        multiple_for_dpr = settings.src_attr;
         if (device_pixel_ration > 1) {
-            // `src_attr` for normal
-            // Retina support with combination of `src_attr` value
             // `src_attr`-1-5x
             // `src_attr`-2x
             // `src_attr`-3x
             multiple_for_dpr = settings.src_attr + "-" + (device_pixel_ration > 2 ? "3x" : (device_pixel_ration > 1.5 ? "2x" : "1-5x"));
         }
 
-        if (multiple_for_dpr === null) {
-            multiple_for_dpr = settings.src_attr;
-        }
-
-        /* Cache container as jQuery as object. */
+        /* Cache container as jQuery object. */
         $container = (settings.container === undefined || settings.container === window) ?
             $window : $(settings.container);
 
         var refresh = function () {
+            // To check limit_retry
             var counter = 0;
 
+            // Iterate through all matched elements and check for visibility, appearance and dis-appearance
+            // to trigger the responsive event
             elements.each(function () {
                 var $this = $(this);
+                // If element is still not visible according to config setting
                 if (settings.skip_invisible && !$this.is(":visible")) {
+                    // then return
                     return;
                 }
-                if ($.above_the_top(this, settings.threshold) ||
-                    $.left_of_begin(this, settings.threshold)) {
-                    /* Nothing. */
+                // Work for disappear also and persist event binding
+                if ($.above_the_top(this, settings.threshold_disappear) ||
+                    $.left_of_begin(this, settings.threshold_disappear)) {
+                    $this.trigger("disappear");
                 } else if (!$.below_the_fold(this, settings.threshold) && !$.right_of_fold(this, settings.threshold)) {
                     $this.trigger("appear");
                     /* if we found an image we'll load, reset the counter */
                     counter = 0;
-                } else {
-                    if (++counter > settings.limit_retry) {
-                        return false;
-                    }
+                } else if (++counter > settings.limit_retry) {
+                    return false;
                 }
             });
 
@@ -106,9 +118,9 @@
         };
 
         var toggle_classes = function ($element) {
-            var toggle_class = $element.data("toggle-class");
-            var add_class = $element.data("add-class");
-            var remove_class = $element.data("remove-class");
+            var toggle_class = $element.attr("data-toggle-class");
+            var add_class = $element.attr("data-add-class");
+            var remove_class = $element.attr("data-remove-class");
 
             if (toggle_class) {
                 $element.toggleClass(toggle_class);
@@ -129,14 +141,14 @@
                 src_original = $.trim($element.attr(multiple_for_dpr));
             }
 
-            $("<img />").bind("load", function () {
+            $("<img />").on("load", function () {
                 $element.hide();
                 $element.attr("src", src_original);
                 $element[element_settings.effect](element_settings.effect_speed);
                 element.loaded = true;
                 remove_this_element();
                 element_settings.load(element, elements, element_settings);
-            }).attr("src", src_original);
+            }).on('error', element_settings.error).attr("src", src_original);
         };
 
         var load_for_iframe = function (element, element_settings, remove_this_element) {
@@ -159,11 +171,11 @@
         var load_for_anchor = function (element, element_settings, remove_this_element) {
             var $element = $(element);
             var url = $element.attr("href");
-            var to_do = $element.data("do");
-            var $target = $element.data("target");
-            // If target is not a html tag not CSS selector,
-            // but represents like function, call that function
-            // and find target element
+            // `$element.attr("data-do")` to maintain BC
+            var append_instead = $element.attr("data-do") !== undefined || $element.attr("data-append") !== undefined;
+            var $target = $element.attr("data-target");
+            // If target is not an element nor CSS selector,
+            // but has specific plugin define string like below then
             if ($target === "callback()") {
                 // Call toggle_classes to toggle defined classes on target element
                 toggle_classes($element);
@@ -176,9 +188,10 @@
                 //
                 // and return
                 return;
-            } else if ($target === "parent()") {
+            } else if ($target === "parent()") { // TODO: parent() can take argument so regex match and call with arg
                 $target = $element.parent();
             } else if ($target) {
+                // if any element or css selector
                 $target = $($target);
             }
 
@@ -198,6 +211,9 @@
                 toggle_classes($target);
             } else {
 
+                if ($element.attr("data-push-state")) {
+                    History.pushState($element.attr("data-state") || null, $element.attr("title") || $element.text() || null, url);
+                }
                 // More options from data attribute of $element
                 var ajax_options = {
                     method: "GET",
@@ -205,8 +221,8 @@
                     data: {}
                 };
                 $.ajax(ajax_options).done(function (responseText) {
-                    if (to_do === "append") {
-                        $target.appendChild(responseText);
+                    if (append_instead) {
+                        $target.append(responseText);
                     } else {
                         $target.html(responseText);
                     }
@@ -225,17 +241,10 @@
 
                     element_settings.load(element, elements, element_settings, responseText);
                 }).fail(function (jqXHR, textStatus) {
-                    element_settings.load(element, elements, element_settings, jqXHR, textStatus);
+                    element_settings.error(element, elements, element_settings, jqXHR, textStatus);
                 });
             }
         };
-
-        /* Fire one scroll event per scroll. Not one scroll event per element. */
-        if (settings.event.indexOf("scroll") === 0) {
-            $container.bind(settings.event, function () {
-                return refresh();
-            });
-        }
 
         this.each(function () {
             var self = this;
@@ -260,7 +269,7 @@
             var is_img = $self.is("img");
             var is_iframe = $self.is("iframe");
 
-            if ($self.data("toggle-class") || $self.data("add-class") || $self.data("remove-class")) {
+            if ($self.attr("data-toggle-class") || $self.attr("data-add-class") || $self.attr("data-remove-class")) {
                 // Copy class, just to prevent infinite recursion
                 var prev_on_load = element_settings.load;
                 element_settings.load = function (element, elements, element_settings, jqXHR, textStatus) {
@@ -301,7 +310,7 @@
                 if (is_img) {
                     load_for_image(self, element_settings, remove_loaded_elements);
                 } else if (is_a) {
-                    if ($self.data("target")) {
+                    if ($self.attr("data-target")) {
                         load_for_anchor(self, element_settings, remove_loaded_elements);
                     } else {
                         log("%cAn Anchor Tag must have defined data-target=\"\" attribute " +
@@ -317,10 +326,13 @@
                     // class will have to set background property
                     // e.g: <div class="smartify" data-add-class="bg-img"></div>
                 }
+            }).one("disappear", function () {
+                log("%cDisappear Called", "color: #ff0000");
             });
 
+            // Manually make this element as appear by binding any event(except scroll)
             if (element_settings.event.indexOf("scroll")) {
-                $self.bind(element_settings.event, function () {
+                $self.on(element_settings.event, function () {
                     if (!self.loaded) {
                         $self.trigger("appear");
                     }
@@ -331,7 +343,7 @@
         /* With IOS5 force loading images when navigating with back button. */
         /* Non optimal workaround. */
         if ((/(?:iphone|ipod|ipad).*os 5/gi).test(navigator.appVersion)) {
-            $window.bind("pageshow", function (event) {
+            $window.on("pageshow", function (event) {
                 if (event.originalEvent && event.originalEvent.persisted) {
                     elements.each(function () {
                         $(this).trigger("appear");
@@ -340,10 +352,13 @@
             });
         }
 
-        // Because on viewport resize some elements could be visible
-        // due to CSS3 @media query
-        $window.bind("resize orientationchange", refresh);
-        // Initial Smartify at document ready, prior to scroll
+        // Refresh elements
+        // 1. On each scroll of container element, could be $window or any
+        $container.on("scroll", refresh);
+        // 2. On window resize or orientation change
+        // in both situation some elements may become visible due to css3 @media query or container width/height
+        $window.on("resize orientationchange", refresh);
+        // 3. And at first when document is ready
         $(window.document).ready(refresh);
 
         return this;
@@ -421,17 +436,21 @@
      * @desc This plugin is a wrapper plugin for jQuery Smartify
      * to enhance usability and performance by binding on section/block
      * wise elements instead whole elements at once.
-     * @version 1.0.0
+     * @version 1.0.0-rc
      */
     $.fn.smartify_section = function (options, children_options) {
         var settings = {
             threshold: 0,
-            on_trigger: "visible",
+            on_trigger: "appear", // replaced from "visible", bcz visibility is different than appearance
             persist_trigger: false,
             skip_invisible: true,
             children_selector: ".smartify-children"
         };
         $.extend(settings, options || {});
+        // for bc maintain
+        if (settings.on_trigger === "visible") {
+            settings.on_trigger = "appear";
+        }
         this.each(function () {
             var $this = $(this);
             var this_settings = $.extend({}, settings, $this.data());
@@ -455,7 +474,7 @@
                     // setTimeout("$(window).scroll();", 100);
                 }
             };
-            if (this_settings.on_trigger === "visible") {
+            if (this_settings.on_trigger === "appear") {
                 // Smartify itself
                 $this.smartify({threshold: this_settings.threshold, appear: callback_function});
             } else if (this_settings.on_trigger) {
